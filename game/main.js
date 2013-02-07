@@ -13,16 +13,16 @@ var manifest = [
 ];
 
 var shapes = [
-    /*[[100, 0], [-50, 400], [400, 500]],
+    [[100, 0], [-50, 400], [400, 500]],
     [[1500, 100], [1200, 500], [1500, 1000], [1900, 500]],
     [[800, -400], [600, 200], [1000, 300]],
-    [[-100, 700], [600, 900], [900, 1200], [-100, 1200]]*/
-    [[0,0], [1000, 0], [1000, 1000], [0, 1000]]
+    [[-100, 700], [600, 900], [900, 1200], [-100, 1200]]
+    /*[[0,0], [1000, 0], [1000, 1000], [0, 1000]]*/
 ]
 
 var numSectorsX = 5;
 var numSectorsY = 20;
-var sectorBaseSize = 1000;
+var sectorBaseSize = 2000;
 var sectorSize;
 var sectors;
 
@@ -82,7 +82,7 @@ function loadComplete(event) {
     canvas.addEventListener("mousemove", mouseMove, false);
 
     playSound("bgmusic_1");
-    countDown.phaseStart =  new Date().getTime();
+    countDown.phaseStart = new Date().getTime();
     rafId = requestAnimationFrame(gameLoop);
 }
 
@@ -91,7 +91,7 @@ function generateSectors() {
 
     for (var x = 0; x < numSectorsX; x++) {
         for (var y = 0; y < numSectorsY; y++) {
-            sectors[y * numSectorsX + x] = generateShapes(x * sectorSize, -y * sectorSize);
+            sectors[y * numSectorsX + x] = generateShapes(x * sectorBaseSize, -y * sectorBaseSize);
         }
     }
 }
@@ -204,7 +204,7 @@ function drawFloor(dt) {
     ctx.shadowBlur = (fast ? 0 : 20);
     ctx.shadowColor = "#000022";
     for (var x = 0; x < 9; x++) {
-        var rx = x * s - pl.x % s - s/2;
+        var rx = x * s - pl.x % s - s / 2;
         ctx.beginPath();
         ctx.moveTo(rx, 0);
         ctx.lineTo(rx, canvasH);
@@ -212,7 +212,7 @@ function drawFloor(dt) {
     }
 
     for (var x = 0; x < 6; x++) {
-        var ry = x * s - pl.y % s - s/2;
+        var ry = x * s - pl.y % s - s / 2;
         ctx.beginPath();
         ctx.moveTo(0, ry);
         ctx.lineTo(canvasW, ry);
@@ -296,16 +296,18 @@ function drawPlayer(dt) {
 function drawSectors() {
     document.getElementById("debug_pos").innerHTML = Math.floor(pl.x) + "," + Math.floor(pl.y);
 
-    var plsx = Math.floor(pl.x / sectorSize);
-    var plsy = Math.floor(-pl.y / sectorSize);
+    var plsx = Math.floor(pl.x / sectorSize + 0.5);
+    var plsy = Math.floor(-pl.y / sectorSize + 0.5);
 
     document.getElementById("debug_sector").innerHTML = plsx + "," + plsy;
 
-    for (var x = 0; x <= 2; x++) {
-        for (var y = 0; y <= 2; y++) {
-            //if (x >= 0 && x < numSectorsX && y >= 0 && y < numSectorsY) {
-                drawShapes(sectors[(plsy + y) * numSectorsX + (plsx + x)]);
-           // }
+    for (var x = -2; x <= 2; x++) {
+        for (var y = -2; y <= 2; y++) {
+            var sx = plsx + x;
+            var sy = plsy + y;
+            if (sx >= 0 && sx < numSectorsX && sy >= 0 && sy < numSectorsY) {
+                drawShapes(sectors[sy * numSectorsX + sx]);
+            }
         }
     }
 }
