@@ -5,7 +5,7 @@ var canvasW, canvasH;
 var scale;
 var rafId;
 
-var fast = true;
+var fast = false;
 
 var sfxPath = "sfx/";
 var manifest = [
@@ -43,7 +43,9 @@ var pl = {
     speed: 0.7,
     canMove: false,
     score: 0,
-    scoreState: ScoreState.GAINING
+    scoreState: ScoreState.GAINING,
+    hadCollision: false,
+    size: 70
 }
 
 var mouse = {
@@ -146,7 +148,7 @@ function gameLoop() {
         movePlayer(dt);
     }
 
-    if(pl.y < pl.ly) {
+    if (pl.y < pl.ly) {
         pl.score += (pl.ly - pl.y);
         pl.scoreState = ScoreState.GAINING;
     } else if (pl.y > pl.ly) {
@@ -281,17 +283,66 @@ function drawCountdown(dt) {
 
 function movePlayer(dt) {
     if (38 in keys && keys[38] || 87 in keys && keys[87]) { //up
-        pl.y -= dt * pl.speed;
+        if (!testPointCollides([pl.x, pl.y - dt * pl.speed], pl.size)) {
+            pl.y -= dt * pl.speed;
+        }
     }
     if (40 in keys && keys[40] || 83 in keys && keys[83]) { //down
-        pl.y += dt * pl.speed;
+        if (!testPointCollides([pl.x, pl.y + dt * pl.speed], pl.size)) {
+            pl.y += dt * pl.speed;
+        }
     }
     if (37 in keys && keys[37] || 65 in keys && keys[65]) { //left
-        pl.x -= dt * pl.speed;
+        if (!testPointCollides([pl.x - dt * pl.speed, pl.y], pl.size)) {
+            pl.x -= dt * pl.speed;
+        }
     }
     if (39 in keys && keys[39] || 68 in keys && keys[68]) { //right
-        pl.x += dt * pl.speed;
+        if (!testPointCollides([pl.x + dt * pl.speed, pl.y], pl.size)) {
+            pl.x += dt * pl.speed;
+        }
     }
+
+
+    //ctx.fillStyle = "#FFF";
+    //ctx.fillRect(pl.x / scale + canvasW / scale / 2, pl.y / scale + canvasH / scale / 3 * 2, 100, 100);
+    //document.getElementById("debug_bla").innerHTML = Math.floor(testPlayerCollides());
+}
+
+function testPointCollides(test, size) {
+    var tsx = Math.floor(test[0] / sectorSize + 0.5);
+    var tsy = Math.floor(-test[1] / sectorSize + 0.5);
+    var sector = sectors[tsy * numSectorsX + tsx];
+
+    var testx = test[0] / scale + canvasW / scale / 2;
+    var testy = test[1] / scale + canvasH / scale / 3 * 2;
+
+    //return testInsideSectorPolys(sector, [testx, testy]);
+    return findClosesDistToSectorPoly(sector, [testx, testy]) < size;
+}
+
+function findClosesDistToSectorPoly(sector, test) {
+    var closest = 999999999;
+    for (var si = 0; si < sector.length; si++) {
+        for (var li = 0; li < sector[si].length; li++) {
+            var p2 = (li == sector[si].length - 1) ? sector[si][0] : sector[si][li + 1];
+            var distSq = distToSegmentSquared(test, sector[si][li], p2);
+            if (distSq < closest) {
+                closest = distSq;
+            }
+        }
+    }
+    return Math.sqrt(closest);
+}
+
+function testInsideSectorPolys(sector, test) {
+    for (var si = 0; si < sector.length; si++) {
+        if (testInsidePoly(sector[si].length, sector[si], test)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function drawFloor(dt) {
@@ -373,7 +424,7 @@ function drawPlayer(dt) {
     var x = canvasW / 2;
     var y = canvasH / 3 * 2;
     var ri = 0;
-    var ro = 70 * scale;
+    var ro = pl.size * scale;
 
     drawPlayer.phase += 0.012 * dt;
 
@@ -424,6 +475,11 @@ function drawShapes(shps) {
             ctx.lineTo(shps[i][p][0], shps[i][p][1]);
         }
         ctx.closePath();
+
+        if (ctx.isPointInPath(canvasW / 2, canvasH / 3 * 2)) {
+            pl.hadCollision = true;
+        }
+
         ctx.stroke();
         ctx.fill();
     }
@@ -453,4 +509,29 @@ function doKeyUp(evt) {
 function mouseMove(e) {
     mouse.x = e.offsetX;
     mouse.y = e.offsetY;
+}
+
+function sqr(x) { return x * x }
+function dist2(v, w) { return sqr(v[0] - w[0]) + sqr(v[1] - w[1]) }
+function distToSegmentSquared(p, v, w) {
+    var l2 = dist2(v, w);
+    if (l2 == 0) return dist2(p, v);
+    var t = ((p[0] - v[0]) * (w[0] - v[0]) + (p[1] - v[1]) * (w[1] - v[1])) / l2;
+    if (t < 0) return dist2(p, v);
+    if (t > 1) return dist2(p, w);
+    return dist2(p, [
+        v[0] + t * (w[0] - v[0]),
+        v[1] + t * (w[1] - v[1])
+    ]);
+}
+function distToSegment(p, v, w) { return Math.sqrt(distToSegmentSquared(p, v, w)); }
+
+function testInsidePoly(nvert, verts, test) {
+    var i, j, c = false;
+    for (i = 0, j = nvert - 1; i < nvert; j = i++) {
+        if (((verts[i][1] > test[1]) != (verts[j][1] > test[1])) &&
+         (test[0] < (verts[j][0] - verts[i][0]) * (test[1] - verts[i][1]) / (verts[j][1] - verts[i][1]) + verts[i][0]))
+            c = !c;
+    }
+    return c;
 }
