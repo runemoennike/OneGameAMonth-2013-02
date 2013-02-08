@@ -10,6 +10,8 @@ var fast = true;
 var sfxPath = "sfx/";
 var manifest = [
     { src: sfxPath + "pulse.mp3|" + sfxPath + "pulse.ogg", id: "bgmusic_1", data: 1 },
+    { src: sfxPath + "countdown.mp3|" + sfxPath + "countdown.ogg", id: "countdown", data: 1 },
+    { src: sfxPath + "deathnoise.mp3|" + sfxPath + "deathnoise.ogg", id: "deathnoise", data: 1 },
 ];
 
 var shapes = [
@@ -26,11 +28,20 @@ var sectorBaseSize = 2000;
 var sectorSize;
 var sectors;
 
+var GameState = { COUNTDOWN: 1, PLAYING: 2, DEAD: 3 }
+
+var gamestate = GameState.COUNTDOWN;
+var playStartTime;
+var playLength = (3 * 60 + 6) * 1000;
+
 var pl = {
     x: 0,
     y: 0,
+    lx: 0,
+    ly: 0,
     speed: 0.7,
-    canMove: false
+    canMove: false,
+    score: 0
 }
 
 var mouse = {
@@ -48,8 +59,8 @@ function init() {
     scale = Math.sqrt((canvasW * canvasW + canvasH * canvasH)) / Math.sqrt((1920 * 1920) + (1080 * 1080));
 
     sectorSize = sectorBaseSize * scale;
-    pl.x = sectorSize * numSectorsX / 2;
-    pl.y = -sectorSize;
+    pl.x = pl.lx = sectorSize * numSectorsX / 2;
+    pl.y = pl.ly = -sectorSize;
 
     createjs.FlashPlugin.BASE_PATH = "lib/"
     if (!createjs.SoundJS.checkPlugin(true)) {
@@ -84,6 +95,8 @@ function loadComplete(event) {
     playSound("bgmusic_1");
     countDown.phaseStart = new Date().getTime();
     rafId = requestAnimationFrame(gameLoop);
+
+    playSound("countdown");
 }
 
 function generateSectors() {
@@ -131,6 +144,18 @@ function gameLoop() {
         movePlayer(dt);
     }
 
+    if(pl.y < pl.ly) {
+        pl.score += (pl.ly - pl.y);
+    } else if (pl.y > pl.ly) {
+        pl.score -= (pl.y - pl.ly) / 2;
+    } else {
+        pl.score -= dt / 100;
+    }
+
+    if (pl.score < 0) {
+        pl.score = 0;
+    }
+
     drawFloor(dt);
     drawAim(dt);
     drawPlayer(dt);
@@ -141,9 +166,17 @@ function gameLoop() {
 
     ctx.restore();
 
-    if (countDown.isOn) {
+    if (gamestate == GameState.COUNTDOWN) {
         drawCountdown();
     }
+
+    if (gamestate == GameState.PLAYING) {
+        drawTimer(dt);
+        drawScore(dt);
+    }
+
+    pl.lx = pl.x;
+    pl.ly = pl.y;
 
     fpsc++;
     if (now - fpst > 1000) {
@@ -154,6 +187,47 @@ function gameLoop() {
 
 
     document.getElementById("debug_frametime").innerHTML = dt;
+}
+
+function drawScore(dt) {
+    var fontSize = 100 * scale;
+    var red = 0;
+    var green = 255;
+    var blue = 0;
+    ctx.fillStyle = "rgb(" + red + ", " + green + ", " + blue + ")";
+    ctx.font = "bold " + fontSize + "px Sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.fillText(Math.floor(pl.score), canvasW * .02, 0);
+
+}
+
+function drawTimer(dt) {
+    var now = new Date().getTime();
+    var timeLeft = playLength - (now - playStartTime);
+    var perc = timeLeft / playLength;
+
+    var secs = timeLeft / 1000;
+    var mm = Math.floor(secs / 60);
+    var ss = Math.floor(secs - (mm * 60));
+    var hs = Math.floor((timeLeft - mm * 60000 - ss * 1000) / 10)
+
+    if (ss < 10) {
+        ss = "0" + ss;
+    }
+    if (hs < 10) {
+        hs = "0" + hs;
+    }
+
+    var fontSize = 100 * scale;
+    var red = Math.floor((1 - perc) * 255);
+    var green = Math.floor((perc) * 255);
+    ctx.fillStyle = "rgb(" + red + ", " + green + ", 0)";
+    ctx.font = "bold " + fontSize + "px Sans-serif";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "top";
+    ctx.fillText(mm + ":" + ss + "." + hs, canvasW * .98, 0);
+
 }
 
 function drawCountdown(dt) {
@@ -171,13 +245,18 @@ function drawCountdown(dt) {
     if (now - countDown.phaseStart > countDown.length / 3) {
         countDown.value--;
         countDown.phaseStart = now;
+
+        if (countDown.value > 0) {
+            playSound("countdown");
+        }
     }
 
     if (countDown.value == 0) {
         pl.canMove = true;
     }
     if (countDown.value < 0) {
-        countDown.isOn = false;
+        gamestate = GameState.PLAYING;
+        playStartTime = new Date().getTime();
     }
 }
 
@@ -340,7 +419,7 @@ function kill() {
 
 function playSound(id) {
     //Play the sound: play (src, interrupt, delay, offset, loop, volume, pan)
-    var instance = createjs.SoundJS.play(id, createjs.SoundJS.INTERRUPT_NONE, 0, 0, false, 1);
+    var instance = createjs.SoundJS.play(id, createjs.SoundJS.INTERRUPT_ANY, 0, 0, false, 1);
     if (instance == null || instance.playState == createjs.SoundJS.PLAY_FAILED) { return; }
 }
 

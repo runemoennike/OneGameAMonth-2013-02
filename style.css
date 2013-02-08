@@ -1,4 +1,14 @@
-﻿body {
+﻿*
+{
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+body {
 	margin: 0;
 	background-color: #000;
 	color: #fff;
@@ -28,7 +38,7 @@
 	z-index: 10000;
 	background-color: white;
 	position: fixed;
-	top: 0px;
+	bottom: 0px;
 	left: 0px;
 	width: 500px;
 	height: 20px;
