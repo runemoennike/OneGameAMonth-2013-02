@@ -46,6 +46,9 @@ function loadComplete(event) {
     window.addEventListener('keyup', doKeyUp, true);
 
     canvas.addEventListener("mousemove", mouseMove, false);
+    canvas.addEventListener("mousedown", mouseDown, false);
+    canvas.addEventListener("mouseup", mouseUp, false);
+    canvas.addEventListener("mouseout", mouseUp, false);
 
     playSound("bgmusic_1");
     countDown.phaseStart = new Date().getTime();
@@ -67,7 +70,12 @@ function gameLoop() {
 
     if (pl.canMove) {
         movePlayer(dt);
+
+        if (mouse.b) {
+            playerShoot();
+        }
     }
+    updateBullets(dt);
 
     if (pl.y < pl.ly) {
         pl.score += (pl.ly - pl.y);
@@ -89,6 +97,8 @@ function gameLoop() {
     ctx.translate(-pl.x, -pl.y);
     ctx.scale(scale, scale);
     drawSectors();
+
+    drawBullets();
 
     ctx.restore();
     drawAim(dt);

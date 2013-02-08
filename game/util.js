@@ -39,3 +39,54 @@ String.prototype.rpad = function (padString, length) {
         str = str + padString;
     return str;
 }
+
+function veclen(v) {
+    return Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+}
+
+function vecnorm(v) {
+    var len = veclen(v);
+    return [v[0] / len, v[1] / len];
+}
+
+function vecsub(v, w) {
+    return [v[0] - w[0], v[1] - w[1]];
+}
+
+function vecadd(v, w) {
+    return [v[0] + w[0], v[1] + w[1]];
+}
+
+function vecmulscalar(v, s) {
+    return [v[0] * s, v[1] * s];
+}
+
+function vecdivscalar(v, s) {
+    return [v[0] / s, v[1] / s];
+}
+
+function vecdot(v, w) {
+    return v[0] * w[0] + v[1] * w[1];
+}
+
+function vecaddto(v, w) {
+    v[0] += w[0];
+    v[1] += w[1];
+}
+
+function vecsubfrom(v, w) {
+    v[0] -= w[0];
+    v[1] -= w[1];
+}
+
+function vecrot(v, theta) {
+    var cs = Math.cos(theta),
+        sn = Math.sin(theta),
+        x = v[0],
+        y = v[1];
+
+    return [
+        x * cs - y * sn,
+        x * sn + y * cs
+    ];
+}

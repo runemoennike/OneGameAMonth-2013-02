@@ -1,7 +1,8 @@
 ﻿
 var mouse = {
     x: 0,
-    y: 0
+    y: 0,
+    b: false
 }
 
 
@@ -16,4 +17,12 @@ function doKeyUp(evt) {
 function mouseMove(e) {
     mouse.x = e.offsetX;
     mouse.y = e.offsetY;
+}
+
+function mouseDown(e) {
+    mouse.b = true;
+}
+
+function mouseUp(e) {
+    mouse.b = false;
 }

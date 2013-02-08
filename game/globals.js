@@ -2,6 +2,7 @@
 var GameState = { COUNTDOWN: 1, PLAYING: 2, DEAD: 3 }
 var ScoreState = { GAINING: 1, LOSING: 2, LOSING_FAST: 3 }
 
+
 var body;
 var canvas;
 var ctx;

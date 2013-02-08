@@ -109,10 +109,12 @@ function testPointCollides(test, size) {
         for (var y = -1; y <= 1; y++) {
             var sx = tsx + x;
             var sy = tsy + y;
-            var sector = sectors[sy * numSectorsX + sx];
-            //return testInsideSectorPolys(sector, [testx, testy]);
-            if (findClosesDistToSectorPoly(sector, [testx, testy]) < size) {
-                return true;
+            if (sx >= 0 && sx < numSectorsX && sy >= 0 && sy < numSectorsY) {
+                var sector = sectors[sy * numSectorsX + sx];
+                //return testInsideSectorPolys(sector, [testx, testy]);
+                if (findClosesDistToSectorPoly(sector, [testx, testy]) < size) {
+                    return true;
+                }
             }
         }
     }
@@ -188,4 +190,19 @@ function drawSectors() {
             }
         }
     }
+}
+
+function screenToWorld(v) {
+    return [
+        v[0] + pl.x,
+        v[1] + pl.y
+        ]
+}
+
+
+function screenToWorldScaled(v) {
+    return [
+        (v[0] + pl.x) / scale,
+        (v[1] + pl.y) / scale
+    ]
 }

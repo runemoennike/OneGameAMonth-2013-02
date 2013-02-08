@@ -9,7 +9,9 @@ var pl = {
     score: 0,
     scoreState: ScoreState.GAINING,
     hadCollision: false,
-    size: 70
+    size: 70,
+    lastFire: 0,
+    bulletType: BulletType.PLAYER_STD
 }
 
 
@@ -34,6 +36,29 @@ function movePlayer(dt) {
             pl.x += dt * pl.speed;
         }
     }
+}
+
+function playerShoot() {
+    var now = new Date().getTime();
+    if (now - pl.lastFire > pl.bulletType.cooldown) {
+        pl.lastFire = now;
+        spawnBullet(playerScaledWorldPos(), screenToWorldScaled([mouse.x, mouse.y]), pl.bulletType, playerShoot);
+    }
+}
+
+function playerWorldPos() {
+    return [
+        pl.x + canvasW / 2,
+        pl.y + canvasH / 3 * 2
+    ];
+}
+
+
+function playerScaledWorldPos() {
+    return [
+        (pl.x + canvasW / 2) / scale,
+        (pl.y + canvasH / 3 * 2) / scale
+    ];
 }
 
 
