@@ -108,20 +108,56 @@ function generateSectors() {
 
     for (var x = 0; x < numSectorsX; x++) {
         for (var y = 0; y < numSectorsY; y++) {
-            sectors[y * numSectorsX + x] = generateShapes(x * sectorBaseSize, -y * sectorBaseSize);
+            var offX = x * sectorBaseSize;
+            var offY = - y * sectorBaseSize;
+            var numShapes = 5;
+            var avgSize = 300;
+            var pointiness = 0.3;
+            var complexity = 2;
+            sectors[y * numSectorsX + x] = generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity);
         }
     }
 }
 
-function generateShapes(offX, offY) {
-    var result = new Array(shapes.length);
-    for (var shp = 0; shp < shapes.length; shp++) {
-        result[shp] = new Array(shapes[shp].length);
-        for (var point = 0; point < shapes[shp].length; point++) {
-            result[shp][point] = [shapes[shp][point][0] + offX, shapes[shp][point][1] + offY];
-        }
+function generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity) {
+    //var result = new Array(shapes.length);
+    //for (var shp = 0; shp < shapes.length; shp++) {
+    //    result[shp] = new Array(shapes[shp].length);
+    //    for (var point = 0; point < shapes[shp].length; point++) {
+    //        result[shp][point] = [shapes[shp][point][0] + offX, shapes[shp][point][1] + offY];
+    //    }
+    //}
+    //return result;
+
+    var shapes = new Array(numShapes);
+
+    var minR = avgSize - pointiness * avgSize/2;
+    var maxR = avgSize + pointiness * avgSize / 2;
+    var minX = offX + maxR;
+    var maxX = offX + sectorBaseSize - maxR;
+    var minY = offY + maxR;
+    var maxY = offY + sectorBaseSize - maxR;
+
+    for (var s = 0; s < numShapes; s++) {
+        var cx = Math.random() * (maxX - minX) + minX;
+        var cy = Math.random() * (maxY - minY) + minY;
+        var numPoints = Math.floor(3 + complexity * Math.random());
+        shapes[s] = generateShape(cx, cy, minR, maxR, numPoints);
     }
-    return result;
+
+    return shapes;
+}
+
+function generateShape(cx, cy, minR, maxR, numPoints) {
+    var shape = new Array(numPoints);
+    for (var p = 0; p < numPoints; p++) {
+        var angle = 2 * Math.PI * (p / numPoints);
+        var r = Math.random() * (maxR - minR) + minR;
+        var x = cx + Math.cos(angle) * r;
+        var y = cy + Math.sin(angle) * r;
+        shape[p] = [x,y]
+    }
+    return shape;
 }
 
 var time;
