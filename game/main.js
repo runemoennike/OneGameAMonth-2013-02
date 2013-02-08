@@ -5,7 +5,7 @@ var canvasW, canvasH;
 var scale;
 var rafId;
 
-var fast = false;
+var fast = true;
 
 var sfxPath = "sfx/";
 var manifest = [
@@ -14,13 +14,13 @@ var manifest = [
     { src: sfxPath + "deathnoise.mp3|" + sfxPath + "deathnoise.ogg", id: "deathnoise", data: 1 },
 ];
 
-var shapes = [
-    [[100, 0], [-50, 400], [400, 500]],
-    [[1500, 100], [1200, 500], [1500, 1000], [1900, 500]],
-    [[800, -400], [600, 200], [1000, 300]],
-    [[-100, 700], [600, 900], [900, 1200], [-100, 1200]]
-    /*[[0,0], [1000, 0], [1000, 1000], [0, 1000]]*/
-]
+//var shapes = [
+//    [[100, 0], [-50, 400], [400, 500]],
+//    [[1500, 100], [1200, 500], [1500, 1000], [1900, 500]],
+//    [[800, -400], [600, 200], [1000, 300]],
+//    [[-100, 700], [600, 900], [900, 1200], [-100, 1200]]
+//    /*[[0,0], [1000, 0], [1000, 1000], [0, 1000]]*/
+//]
 
 var numSectorsX = 5;
 var numSectorsY = 20;
@@ -113,7 +113,7 @@ function generateSectors() {
             var numShapes = 5;
             var avgSize = 300;
             var pointiness = 0.3;
-            var complexity = 2;
+            var complexity = 5;
             sectors[y * numSectorsX + x] = generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity);
         }
     }
