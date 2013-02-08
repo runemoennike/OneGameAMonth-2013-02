@@ -1,0 +1,191 @@
+﻿
+var numSectorsX = 5;
+var numSectorsY = 20;
+var sectorBaseSize = 2000;
+var sectorSize;
+var sectors;
+
+function generateSectors() {
+    sectors = new Array(numSectorsX * numSectorsY);
+
+    for (var x = 0; x < numSectorsX; x++) {
+        for (var y = 0; y < numSectorsY; y++) {
+            var offX = x * sectorBaseSize;
+            var offY = -y * sectorBaseSize;
+            var numShapes = 5;
+            var avgSize = 300;
+            var pointiness = 1.0;
+            var complexity = 7;
+            sectors[y * numSectorsX + x] = generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity);
+        }
+    }
+}
+
+function generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity) {
+    //var result = new Array(shapes.length);
+    //for (var shp = 0; shp < shapes.length; shp++) {
+    //    result[shp] = new Array(shapes[shp].length);
+    //    for (var point = 0; point < shapes[shp].length; point++) {
+    //        result[shp][point] = [shapes[shp][point][0] + offX, shapes[shp][point][1] + offY];
+    //    }
+    //}
+    //return result;
+
+    var shapes = new Array(numShapes);
+
+    var minR = avgSize - pointiness * avgSize / 2;
+    var maxR = avgSize + pointiness * avgSize / 2;
+    //var minX = offX + maxR;
+    //var maxX = offX + sectorBaseSize - maxR;
+    //var minY = offY + maxR;
+    //var maxY = offY + sectorBaseSize - maxR;
+    var minX = offX;
+    var maxX = offX + sectorBaseSize;
+    var minY = offY;
+    var maxY = offY + sectorBaseSize;
+
+    for (var s = 0; s < numShapes; s++) {
+        var cx = Math.random() * (maxX - minX) + minX;
+        var cy = Math.random() * (maxY - minY) + minY;
+        var numPoints = Math.floor(3 + complexity * Math.random());
+        shapes[s] = generateShape(cx, cy, minR, maxR, numPoints);
+    }
+
+
+    //  shapes[0] = [[offX, offY], [offX + sectorBaseSize, offY], [offX + sectorBaseSize, offY + sectorBaseSize], [offX, offY + sectorBaseSize]];
+
+    return shapes;
+}
+
+function generateShape(cx, cy, minR, maxR, numPoints) {
+    var shape = new Array(numPoints);
+    for (var p = 0; p < numPoints; p++) {
+        var angle = 2 * Math.PI * (p / numPoints);
+        var r = Math.random() * (maxR - minR) + minR;
+        var x = cx + Math.cos(angle) * r;
+        var y = cy + Math.sin(angle) * r;
+        shape[p] = [x, y]
+    }
+    return shape;
+}
+
+
+function findClosesDistToSectorPoly(sector, test) {
+    var closest = 999999999;
+    for (var si = 0; si < sector.length; si++) {
+        for (var li = 0; li < sector[si].length; li++) {
+            var p2 = (li == sector[si].length - 1) ? sector[si][0] : sector[si][li + 1];
+            var distSq = distToSegmentSquared(test, sector[si][li], p2);
+            if (distSq < closest) {
+                closest = distSq;
+            }
+        }
+    }
+    return Math.sqrt(closest);
+}
+
+function testInsideSectorPolys(sector, test) {
+    for (var si = 0; si < sector.length; si++) {
+        if (testInsidePoly(sector[si].length, sector[si], test)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function testPointCollides(test, size) {
+    if (noClip) {
+        return false;
+    }
+
+    var tsx = Math.floor(test[0] / sectorSize + 0.5);
+    var tsy = Math.floor(-test[1] / sectorSize + 0.5);
+
+    var testx = test[0] / scale + canvasW / scale / 2;
+    var testy = test[1] / scale + canvasH / scale / 3 * 2;
+
+    for (var x = -1; x <= 1; x++) {
+        for (var y = -1; y <= 1; y++) {
+            var sx = tsx + x;
+            var sy = tsy + y;
+            var sector = sectors[sy * numSectorsX + sx];
+            //return testInsideSectorPolys(sector, [testx, testy]);
+            if (findClosesDistToSectorPoly(sector, [testx, testy]) < size) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
+function drawShapes(shps) {
+    ctx.lineWidth = 30;
+    ctx.lineJoin = "miter";
+    ctx.strokeStyle = "#00AAAA";
+    ctx.fillStyle = "#001111";
+    ctx.shadowBlur = (fast ? 0 : 20);
+    ctx.shadowColor = "#55AAAA";
+    for (var i = 0; i < shps.length; i++) {
+        ctx.beginPath();
+        ctx.moveTo(shps[i][0][0], shps[i][0][1]);
+        for (var p = 1; p < shps[i].length; p++) {
+            ctx.lineTo(shps[i][p][0], shps[i][p][1]);
+        }
+        ctx.closePath();
+
+        if (ctx.isPointInPath(canvasW / 2, canvasH / 3 * 2)) {
+            pl.hadCollision = true;
+        }
+
+        ctx.stroke();
+        ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+}
+
+function drawFloor(dt) {
+    var s = 300 * scale;
+    var flip = Math.floor(pl.x / s) % 2 == 0 || Math.floor(pl.y / s) % 2 != 0;
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 50;
+    ctx.shadowBlur = (fast ? 0 : 20);
+    ctx.shadowColor = "#000022";
+    for (var x = 0; x < 9; x++) {
+        var rx = x * s - pl.x % s - s / 2;
+        ctx.beginPath();
+        ctx.moveTo(rx, 0);
+        ctx.lineTo(rx, canvasH);
+        ctx.stroke();
+    }
+
+    for (var x = 0; x < 6; x++) {
+        var ry = x * s - pl.y % s - s / 2;
+        ctx.beginPath();
+        ctx.moveTo(0, ry);
+        ctx.lineTo(canvasW, ry);
+        ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
+}
+
+
+function drawSectors() {
+    document.getElementById("debug_pos").innerHTML = Math.floor(pl.x) + "," + Math.floor(pl.y);
+
+    var plsx = Math.floor(pl.x / sectorSize + 0.5);
+    var plsy = Math.floor(-pl.y / sectorSize + 0.5);
+
+    document.getElementById("debug_sector").innerHTML = plsx + "," + plsy;
+
+    for (var x = -2; x <= 2; x++) {
+        for (var y = -2; y <= 2; y++) {
+            var sx = plsx + x;
+            var sy = plsy + y;
+            if (sx >= 0 && sx < numSectorsX && sy >= 0 && sy < numSectorsY) {
+                drawShapes(sectors[sy * numSectorsX + sx]);
+            }
+        }
+    }
+}
