@@ -1,0 +1,7 @@
+Timer, length of song. When it runs out, you die. Must make it through the levels before that.
+
+3 levels, different colour themes.
+
+Enemies, hexagons come at you.
+
+Some enemies shoot, some kemikaze.
