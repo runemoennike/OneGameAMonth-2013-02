@@ -28,6 +28,8 @@ var sectorBaseSize = 2000;
 var sectorSize;
 var sectors;
 
+var noClip = false;
+
 var GameState = { COUNTDOWN: 1, PLAYING: 2, DEAD: 3 }
 var ScoreState = { GAINING: 1, LOSING: 2, LOSING_FAST: 3 }
 
@@ -112,8 +114,8 @@ function generateSectors() {
             var offY = - y * sectorBaseSize;
             var numShapes = 5;
             var avgSize = 300;
-            var pointiness = 0.3;
-            var complexity = 5;
+            var pointiness = 1.0;
+            var complexity = 7;
             sectors[y * numSectorsX + x] = generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity);
         }
     }
@@ -133,10 +135,14 @@ function generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity) 
 
     var minR = avgSize - pointiness * avgSize/2;
     var maxR = avgSize + pointiness * avgSize / 2;
-    var minX = offX + maxR;
-    var maxX = offX + sectorBaseSize - maxR;
-    var minY = offY + maxR;
-    var maxY = offY + sectorBaseSize - maxR;
+    //var minX = offX + maxR;
+    //var maxX = offX + sectorBaseSize - maxR;
+    //var minY = offY + maxR;
+    //var maxY = offY + sectorBaseSize - maxR;
+    var minX = offX;
+    var maxX = offX + sectorBaseSize;
+    var minY = offY;
+    var maxY = offY + sectorBaseSize;
 
     for (var s = 0; s < numShapes; s++) {
         var cx = Math.random() * (maxX - minX) + minX;
@@ -144,6 +150,9 @@ function generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity) 
         var numPoints = Math.floor(3 + complexity * Math.random());
         shapes[s] = generateShape(cx, cy, minR, maxR, numPoints);
     }
+
+
+    //  shapes[0] = [[offX, offY], [offX + sectorBaseSize, offY], [offX + sectorBaseSize, offY + sectorBaseSize], [offX, offY + sectorBaseSize]];
 
     return shapes;
 }
@@ -346,15 +355,28 @@ function movePlayer(dt) {
 }
 
 function testPointCollides(test, size) {
+    if (noClip) {
+        return false;
+    }
+
     var tsx = Math.floor(test[0] / sectorSize + 0.5);
     var tsy = Math.floor(-test[1] / sectorSize + 0.5);
-    var sector = sectors[tsy * numSectorsX + tsx];
 
     var testx = test[0] / scale + canvasW / scale / 2;
     var testy = test[1] / scale + canvasH / scale / 3 * 2;
-
-    //return testInsideSectorPolys(sector, [testx, testy]);
-    return findClosesDistToSectorPoly(sector, [testx, testy]) < size;
+    
+    for (var x = -1; x <= 1; x++) {
+        for (var y = -1; y <= 1; y++) {
+            var sx = tsx + x;
+            var sy = tsy + y;
+            var sector = sectors[sy * numSectorsX + sx];
+            //return testInsideSectorPolys(sector, [testx, testy]);
+            if (findClosesDistToSectorPoly(sector, [testx, testy]) < size) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 function findClosesDistToSectorPoly(sector, test) {
