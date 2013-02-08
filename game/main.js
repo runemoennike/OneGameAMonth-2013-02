@@ -73,7 +73,7 @@ function gameLoop() {
         pl.score += (pl.ly - pl.y);
         pl.scoreState = ScoreState.GAINING;
     } else if (pl.y > pl.ly) {
-        pl.score -= (pl.y - pl.ly) / 2;
+        pl.score -= (pl.y - pl.ly) * 1.2;
         pl.scoreState = ScoreState.LOSING_FAST;
     } else {
         pl.score -= dt / 100;
