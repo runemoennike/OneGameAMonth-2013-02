@@ -164,14 +164,14 @@ function gameLoop() {
     }
 
     drawFloor(dt);
-    drawAim(dt);
-    drawPlayer(dt);
 
     ctx.translate(-pl.x, -pl.y);
     ctx.scale(scale, scale);
     drawSectors();
 
     ctx.restore();
+    drawAim(dt);
+    drawPlayer(dt);
 
     if (gamestate == GameState.COUNTDOWN) {
         drawCountdown();
@@ -283,22 +283,22 @@ function drawCountdown(dt) {
 
 function movePlayer(dt) {
     if (38 in keys && keys[38] || 87 in keys && keys[87]) { //up
-        if (!testPointCollides([pl.x, pl.y - dt * pl.speed], pl.size)) {
+        if (!testPointCollides([pl.x, pl.y - dt * pl.speed], pl.size * 1.2)) {
             pl.y -= dt * pl.speed;
         }
     }
     if (40 in keys && keys[40] || 83 in keys && keys[83]) { //down
-        if (!testPointCollides([pl.x, pl.y + dt * pl.speed], pl.size)) {
+        if (!testPointCollides([pl.x, pl.y + dt * pl.speed], pl.size * 1.2)) {
             pl.y += dt * pl.speed;
         }
     }
     if (37 in keys && keys[37] || 65 in keys && keys[65]) { //left
-        if (!testPointCollides([pl.x - dt * pl.speed, pl.y], pl.size)) {
+        if (!testPointCollides([pl.x - dt * pl.speed, pl.y], pl.size * 1.2)) {
             pl.x -= dt * pl.speed;
         }
     }
     if (39 in keys && keys[39] || 68 in keys && keys[68]) { //right
-        if (!testPointCollides([pl.x + dt * pl.speed, pl.y], pl.size)) {
+        if (!testPointCollides([pl.x + dt * pl.speed, pl.y], pl.size * 1.2)) {
             pl.x += dt * pl.speed;
         }
     }
