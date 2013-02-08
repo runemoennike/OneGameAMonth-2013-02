@@ -29,6 +29,7 @@ var sectorSize;
 var sectors;
 
 var GameState = { COUNTDOWN: 1, PLAYING: 2, DEAD: 3 }
+var ScoreState = { GAINING: 1, LOSING: 2, LOSING_FAST: 3 }
 
 var gamestate = GameState.COUNTDOWN;
 var playStartTime;
@@ -41,7 +42,8 @@ var pl = {
     ly: 0,
     speed: 0.7,
     canMove: false,
-    score: 0
+    score: 0,
+    scoreState: ScoreState.GAINING
 }
 
 var mouse = {
@@ -146,10 +148,13 @@ function gameLoop() {
 
     if(pl.y < pl.ly) {
         pl.score += (pl.ly - pl.y);
+        pl.scoreState = ScoreState.GAINING;
     } else if (pl.y > pl.ly) {
         pl.score -= (pl.y - pl.ly) / 2;
+        pl.scoreState = ScoreState.LOSING_FAST;
     } else {
         pl.score -= dt / 100;
+        pl.scoreState = ScoreState.LOSING;
     }
 
     if (pl.score < 0) {
@@ -190,10 +195,24 @@ function gameLoop() {
 }
 
 function drawScore(dt) {
+    if (typeof drawScore.phase == 'undefined') {
+        drawScore.phase = 0;
+    }
+    drawScore.phase += 0.01 * dt;
+
     var fontSize = 100 * scale;
     var red = 0;
     var green = 255;
     var blue = 0;
+
+    if (pl.scoreState == ScoreState.LOSING) {
+        fontSize += Math.abs(Math.cos(drawScore.phase)) * 20 * scale;
+        red = 128;
+    } else if (pl.scoreState == ScoreState.LOSING_FAST) {
+        fontSize += Math.abs(Math.cos(drawScore.phase * 2)) * 30 * scale;
+        red = 200;
+    }
+
     ctx.fillStyle = "rgb(" + red + ", " + green + ", " + blue + ")";
     ctx.font = "bold " + fontSize + "px Sans-serif";
     ctx.textAlign = "left";
