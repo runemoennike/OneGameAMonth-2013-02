@@ -22,7 +22,7 @@ var BulletType = {
 
             var tailX = x - b.direction[0] * 100 * scale;
             var tailY = y - b.direction[1] * 100 * scale;
-            ctx.strokeStyle = "#333366";
+            ctx.strokeStyle = "#666699";
             ctx.lineWidth = size;
             ctx.beginPath();
             ctx.moveTo(x, y);

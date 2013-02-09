@@ -103,7 +103,7 @@ function drawFloorArrows(dt) {
         lit = "#00FF00";
     var x = 200 * scale,
         y = 300 * scale,
-        yd = 100 * scale,
+        yd = 150 * scale,
         w = 100 * scale,
         h = 100 * scale;
 

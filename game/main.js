@@ -77,26 +77,7 @@ function gameLoop() {
     }
     updateBullets(dt);
 
-    var prevScoreState = pl.scoreState;
-    if (pl.y < pl.ly) {
-        pl.score += (pl.ly - pl.y);
-        pl.scoreState = ScoreState.GAINING;
-        pl.lastScoreGainTime = now;
-        floorArrows.isOn = false;
-    } else if (pl.y > pl.ly) {
-        pl.score -= (pl.y - pl.ly) * 1.2;
-        pl.scoreState = ScoreState.LOSING_FAST;
-    } else {
-        pl.score -= dt / 100;
-        pl.scoreState = ScoreState.LOSING;
-    }
-    if (now - playStartTime > 5000 && now - pl.lastScoreGainTime > 2000) {
-        floorArrows.start();
-    }
-
-    if (pl.score < 0) {
-        pl.score = 0;
-    }
+    updateScore(dt);
 
     drawFloor(dt);
 
