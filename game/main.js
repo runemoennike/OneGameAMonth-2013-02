@@ -14,7 +14,7 @@ function init() {
     scale = Math.sqrt((canvasW * canvasW + canvasH * canvasH)) / Math.sqrt((1920 * 1920) + (1080 * 1080));
 
     sectorSize = sectorBaseSize * scale;
-    pl.x = pl.lx = sectorSize * numSectorsX / 2;
+    pl.x = pl.lx = sectorSize * (numSectorsX / 2.0 - 0.5);
     pl.y = pl.ly = -sectorSize;
 
     createjs.FlashPlugin.BASE_PATH = "lib/"

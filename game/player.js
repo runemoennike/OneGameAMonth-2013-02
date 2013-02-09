@@ -4,7 +4,7 @@ var pl = {
     y: 0,
     lx: 0,
     ly: 0,
-    speed: 0.7,
+    speed: 1.0,
     canMove: false,
     score: 0,
     scoreState: ScoreState.GAINING,
@@ -16,24 +16,25 @@ var pl = {
 
 
 function movePlayer(dt) {
+    var sm = dt * pl.speed * scale;
     if (38 in keys && keys[38] || 87 in keys && keys[87]) { //up
-        if (!testPointCollides([pl.x, pl.y - dt * pl.speed], pl.size * 1.2)) {
-            pl.y -= dt * pl.speed;
+        if (!testPointCollides([pl.x, pl.y - sm], pl.size * 1.2)) {
+            pl.y -= sm;
         }
     }
     if (40 in keys && keys[40] || 83 in keys && keys[83]) { //down
-        if (!testPointCollides([pl.x, pl.y + dt * pl.speed], pl.size * 1.2)) {
-            pl.y += dt * pl.speed;
+        if (!testPointCollides([pl.x, pl.y + sm], pl.size * 1.2)) {
+            pl.y += sm;
         }
     }
     if (37 in keys && keys[37] || 65 in keys && keys[65]) { //left
-        if (!testPointCollides([pl.x - dt * pl.speed, pl.y], pl.size * 1.2)) {
-            pl.x -= dt * pl.speed;
+        if (!testPointCollides([pl.x - sm, pl.y], pl.size * 1.2)) {
+            pl.x -= sm;
         }
     }
     if (39 in keys && keys[39] || 68 in keys && keys[68]) { //right
-        if (!testPointCollides([pl.x + dt * pl.speed, pl.y], pl.size * 1.2)) {
-            pl.x += dt * pl.speed;
+        if (!testPointCollides([pl.x + sm, pl.y], pl.size * 1.2)) {
+            pl.x += sm;
         }
     }
 }

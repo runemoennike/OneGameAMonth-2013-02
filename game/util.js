@@ -90,3 +90,7 @@ function vecrot(v, theta) {
         x * sn + y * cs
     ];
 }
+
+function vecinv(v) {
+    return [-v[0], -v[1]];
+}

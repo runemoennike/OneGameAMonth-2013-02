@@ -19,6 +19,8 @@ function generateSectors() {
             sectors[y * numSectorsX + x] = generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity);
         }
     }
+
+    sectors[1 * numSectorsX + 2] = [];
 }
 
 function generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity) {
