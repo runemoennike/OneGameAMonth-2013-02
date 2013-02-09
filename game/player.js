@@ -12,7 +12,7 @@ var pl = {
     hadCollision: false,
     size: 70,
     lastFire: 0,
-    bulletType: BulletType.PLAYER_STD
+    bulletType: BulletType.BANANA
 }
 
 
@@ -33,7 +33,7 @@ function movePlayer(dt) {
     }
 
     if (moveVec[0] || moveVec[1]) {
-        moveOrGlidePlayer(moveVec, dt);
+        moveOrGlidePlayer(vecnorm(moveVec), dt);
     }
 }
 

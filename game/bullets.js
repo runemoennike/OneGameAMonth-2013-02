@@ -21,8 +21,11 @@ function spawnBullet(pos, target, type, stateObj) {
         target: target,
         direction: vecrot(vecnorm(vecsub(target, pos)), angle),
         type: type,
-        startTime: new Date().getTime()
+        startTime: new Date().getTime(),
+        lifeTime: type.lifeTime
     }
+
+    type.spawned(bullet);
 
     bullets[i] = bullet;
 }
@@ -39,7 +42,7 @@ function updateBullets(dt) {
 
             b.type.update(b);
 
-            if (now - b.startTime > b.type.lifeTime) {
+            if (now - b.startTime > b.lifeTime) {
                 bullets[i] = false;
             }
         }
