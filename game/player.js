@@ -17,27 +17,55 @@ var pl = {
 
 
 function movePlayer(dt) {
-    var sm = dt * pl.speed * scale;
+    var moveVec = [0, 0];
+
     if (38 in keys && keys[38] || 87 in keys && keys[87]) { //up
-        if (!testPointCollides([pl.x, pl.y - sm], pl.size * 1.2)) {
-            pl.y -= sm;
-        }
+        moveVec[1] -= 1;
     }
     if (40 in keys && keys[40] || 83 in keys && keys[83]) { //down
-        if (!testPointCollides([pl.x, pl.y + sm], pl.size * 1.2)) {
-            pl.y += sm;
-        }
+        moveVec[1] += 1;
     }
     if (37 in keys && keys[37] || 65 in keys && keys[65]) { //left
-        if (!testPointCollides([pl.x - sm, pl.y], pl.size * 1.2)) {
-            pl.x -= sm;
-        }
+        moveVec[0] -= 1;
     }
     if (39 in keys && keys[39] || 68 in keys && keys[68]) { //right
-        if (!testPointCollides([pl.x + sm, pl.y], pl.size * 1.2)) {
-            pl.x += sm;
+        moveVec[0] += 1;
+    }
+
+    if (moveVec[0] || moveVec[1]) {
+        moveOrGlidePlayer(moveVec, dt);
+    }
+}
+
+function moveOrGlidePlayer(dir, dt) {
+    if (!tryMovePlayer(dir, dt)) {
+        var v = vecnorm(vecsub(lastCollidedLineSegment[0], lastCollidedLineSegment[1])),
+            w = vecnorm(vecsub(lastCollidedLineSegment[1], lastCollidedLineSegment[0]));
+        var moved = false;
+
+        // Try moving along the gradient of the line
+        if (vecdot(v, dir) > vecdot(w, dir)) {
+            moved |= tryMovePlayer(v, dt);
+        } else {
+            moved |= tryMovePlayer(w, dt);
+        }
+        
+        // Try moving perpendicularly
+        if (!moved) {
+            moved |= tryMovePlayer(vecflip(dir), dt) ? true : tryMovePlayer(vecinv(vecflip(dir)), dt);
         }
     }
+}
+
+function tryMovePlayer(dir, dt) {
+    var sm = dt * pl.speed * scale;
+
+    if (!testPointCollides([pl.x + dir[0] * sm, pl.y + dir[1] * sm], pl.size * 1.2)) {
+        pl.x += dir[0] * sm;
+        pl.y += dir[1] * sm;
+        return true;
+    }
+    return false;
 }
 
 function playerShoot() {

@@ -4,6 +4,7 @@ var numSectorsY = 20;
 var sectorBaseSize = 2000;
 var sectorSize;
 var sectors;
+var lastCollidedLineSegment;
 
 function generateSectors() {
     sectors = new Array(numSectorsX * numSectorsY);
@@ -76,10 +77,12 @@ function findClosesDistToSectorPoly(sector, test) {
     var closest = 999999999;
     for (var si = 0; si < sector.length; si++) {
         for (var li = 0; li < sector[si].length; li++) {
-            var p2 = (li == sector[si].length - 1) ? sector[si][0] : sector[si][li + 1];
-            var distSq = distToSegmentSquared(test, sector[si][li], p2);
+            var p1 = sector[si][li],
+                p2 = (li == sector[si].length - 1) ? sector[si][0] : sector[si][li + 1];
+            var distSq = distToSegmentSquared(test, p1, p2);
             if (distSq < closest) {
                 closest = distSq;
+                lastCollidedLineSegment = [p1, p2];
             }
         }
     }

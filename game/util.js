@@ -94,3 +94,7 @@ function vecrot(v, theta) {
 function vecinv(v) {
     return [-v[0], -v[1]];
 }
+
+function vecflip(v) {
+    return [v[1], v[0]];
+}
