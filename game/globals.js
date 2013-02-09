@@ -23,3 +23,14 @@ var countDown = {
     phaseStart: 0,
     value: 3
 }
+
+var floorArrows = {
+    isOn: false,
+    length: 2000,
+    startTime: 0,
+
+    start: function () {
+        floorArrows.isOn = true;
+        floorArrows.startTime = new Date().getTime();
+    }
+}

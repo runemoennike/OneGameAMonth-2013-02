@@ -78,9 +78,71 @@ function drawCountdown(dt) {
 
     if (countDown.value == 0) {
         pl.canMove = true;
+
+        floorArrows.start();
     }
     if (countDown.value < 0) {
         gamestate = GameState.PLAYING;
         playStartTime = new Date().getTime();
+
     }
 }
+
+function drawFloorArrows(dt) {
+    if (typeof drawFloorArrows.phase === "undefined") {
+        drawFloorArrows.phase = 0;
+    }
+
+    drawFloorArrows.phase += 0.009 * dt;
+    if (drawFloorArrows.phase >= 4) {
+        drawFloorArrows.phase = 0;
+    }
+
+    var phase = Math.floor(drawFloorArrows.phase);
+    var unlit = "#005500",
+        lit = "#00FF00";
+    var x = 200 * scale,
+        y = 300 * scale,
+        yd = 100 * scale,
+        w = 100 * scale,
+        h = 100 * scale;
+
+    ctx.beginPath();
+    ctx.fillStyle = unlit;
+    drawArrowShape(x, y, w, h);
+    drawArrowShape(canvasW - x, y + yd * 2, w, h);
+
+    drawArrowShape(x, y + yd, w, h);
+    drawArrowShape(canvasW - x, y + yd * 3, w, h);
+
+    drawArrowShape(x, y + yd * 2, w, h);
+    drawArrowShape(canvasW - x, y, w, h);
+
+    drawArrowShape(x, y + yd * 3, w, h);
+    drawArrowShape(canvasW - x, y + yd, w, h);
+
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.fillStyle = lit;
+    drawArrowShape(x, y + yd * (3-phase), w, h);
+    drawArrowShape(canvasW - x, y + yd * ((3-phase + 2) % 4) , w, h);
+    ctx.fill();
+
+    if (new Date().getTime() - floorArrows.startTime > floorArrows.length) {
+        floorArrows.isOn = false;
+    }
+}
+
+function drawArrowShape(x, y, w, h) {
+    ctx.moveTo(x, y);
+    ctx.lineTo(x - w / 2, y + h / 3 * 2);
+    ctx.lineTo(x - w / 2, y + h);
+    ctx.lineTo(x, y + h / 3 * 1);
+    ctx.lineTo(x + w / 2, y + h);
+    ctx.lineTo(x + w / 2, y + h / 3 * 2);
+    ctx.closePath();
+    //ctx.stroke();
+    //ctx.fill();
+}
+

@@ -176,7 +176,7 @@ function drawFloor(dt) {
 
 
 function drawSectors() {
-    document.getElementById("debug_pos").innerHTML = Math.floor(pl.x) + "," + Math.floor(pl.y);
+    document.getElementById("debug_pos").innerHTML = Math.floor(pl.x / scale) + "," + Math.floor(pl.y / scale);
 
     var plsx = Math.floor(pl.x / sectorSize + 0.5);
     var plsy = Math.floor(-pl.y / sectorSize + 0.5);

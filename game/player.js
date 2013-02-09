@@ -8,6 +8,7 @@ var pl = {
     canMove: false,
     score: 0,
     scoreState: ScoreState.GAINING,
+    lastScoreGainTime: 0,
     hadCollision: false,
     size: 70,
     lastFire: 0,
