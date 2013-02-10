@@ -1,5 +1,5 @@
 ﻿
-var numSectorsX = 5;
+var numSectorsX = 7;
 var numSectorsY = 20;
 var sectorBaseSize = 2000;
 var sectorSize;
@@ -8,15 +8,31 @@ var lastCollidedLineSegment;
 
 function generateSectors() {
     sectors = new Array(numSectorsX * numSectorsY);
+    var numShapes, avgSize, pointiness, complexity, offX, offY;
 
     for (var x = 0; x < numSectorsX; x++) {
         for (var y = 0; y < numSectorsY; y++) {
-            var offX = x * sectorBaseSize;
-            var offY = -y * sectorBaseSize;
-            var numShapes = 5;
-            var avgSize = 300;
-            var pointiness = 1.0;
-            var complexity = 7;
+            offX = x * sectorBaseSize;
+            offY = -y * sectorBaseSize;
+            if (x == 0 || x == numSectorsX - 1 || y == 0 || y == numSectorsY - 1) {
+                numShapes = 5;
+                avgSize = sectorBaseSize / 3;
+                pointiness = 1.0;
+                complexity = 3;
+                if (x == 0)
+                    staticX = - sectorBaseSize / 2;
+                if (y == 0)
+                    staticY = sectorBaseSize / 2;
+                if (x == numSectorsX - 1)
+                    staticX = (numSectorsX + 1.5) * sectorBaseSize;
+                if (y == numSectorsY - 1)
+                    staticY = (numSectorsY + 1.5) * sectorBaseSize;
+            } else {
+                numShapes = 5;
+                avgSize = 300;
+                pointiness = 1.0;
+                complexity = 7;
+            }
             sectors[y * numSectorsX + x] = generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity);
         }
     }
@@ -24,7 +40,7 @@ function generateSectors() {
     sectors[1 * numSectorsX + 2] = [];
 }
 
-function generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity) {
+function generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity, staticX, staticY) {
     //var result = new Array(shapes.length);
     //for (var shp = 0; shp < shapes.length; shp++) {
     //    result[shp] = new Array(shapes[shp].length);
@@ -48,8 +64,8 @@ function generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity) 
     var maxY = offY + sectorBaseSize;
 
     for (var s = 0; s < numShapes; s++) {
-        var cx = Math.random() * (maxX - minX) + minX;
-        var cy = Math.random() * (maxY - minY) + minY;
+        var cx = staticX ? staticX : Math.random() * (maxX - minX) + minX;
+        var cy = staticY ? staticY : Math.random() * (maxY - minY) + minY;
         var numPoints = Math.floor(3 + complexity * Math.random());
         shapes[s] = generateShape(cx, cy, minR, maxR, numPoints);
     }
@@ -100,7 +116,7 @@ function testInsideSectorPolys(sector, test) {
 }
 
 function testPointInPolys(test) {
-    
+
     var wTest = scaleCoords(test);
     var tsx = Math.floor(wTest[0] / sectorSize);
     var tsy = Math.floor(-wTest[1] / sectorSize);
@@ -115,7 +131,7 @@ function testPointInPolys(test) {
 
             if (sx >= 0 && sx < numSectorsX && sy >= 0 && sy < numSectorsY) {
                 var sector = sectors[sy * numSectorsX + sx];
-                if(testInsideSectorPolys(sector, test)) {
+                if (testInsideSectorPolys(sector, test)) {
                     return true;
                 }
             }
@@ -135,7 +151,7 @@ function testPointCollides(test, size) {
     var testx = test[0]; /// scale + canvasW / scale / 2;
     var testy = test[1]; /// scale + canvasH / scale / 3 * 2;
 
-    if (testx < 0 || testx > numSectorsX * sectorBaseSize || testy > 0 || testy < - numSectorsY * sectorBaseSize) {
+    if (testx < 0 || testx > numSectorsX * sectorBaseSize || testy > 0 || testy < -numSectorsY * sectorBaseSize) {
         lastCollidedLineSegment = false;
         return true;
     }
