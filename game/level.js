@@ -135,6 +135,11 @@ function testPointCollides(test, size) {
     var testx = test[0]; /// scale + canvasW / scale / 2;
     var testy = test[1]; /// scale + canvasH / scale / 3 * 2;
 
+    if (testx < 0 || testx > numSectorsX * sectorBaseSize || testy > 0 || testy < - numSectorsY * sectorBaseSize) {
+        lastCollidedLineSegment = false;
+        return true;
+    }
+
     for (var x = -1; x <= 1; x++) {
         for (var y = -1; y <= 1; y++) {
             var sx = tsx + x;

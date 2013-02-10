@@ -44,20 +44,22 @@ function movePlayer(dt) {
 
 function moveOrGlidePlayer(dir, dt) {
     if (!tryMovePlayer(dir, dt)) {
-        var v = vecnorm(vecsub(lastCollidedLineSegment[0], lastCollidedLineSegment[1])),
-            w = vecnorm(vecsub(lastCollidedLineSegment[1], lastCollidedLineSegment[0]));
-        var moved = false;
+        if (typeof lastCollidedLineSegment !== "undefined" && lastCollidedLineSegment !== false) {
+            var v = vecnorm(vecsub(lastCollidedLineSegment[0], lastCollidedLineSegment[1])),
+                w = vecnorm(vecsub(lastCollidedLineSegment[1], lastCollidedLineSegment[0]));
+            var moved = false;
 
-        // Try moving along the gradient of the line
-        if (vecdot(v, dir) > vecdot(w, dir)) {
-            moved |= tryMovePlayer(v, dt);
-        } else {
-            moved |= tryMovePlayer(w, dt);
-        }
+            // Try moving along the gradient of the line
+            if (vecdot(v, dir) > vecdot(w, dir)) {
+                moved |= tryMovePlayer(v, dt);
+            } else {
+                moved |= tryMovePlayer(w, dt);
+            }
 
-        // Try moving perpendicularly
-        if (!moved) {
-            moved |= tryMovePlayer(vecperp(dir), dt) ? true : tryMovePlayer(vecinv(vecperp(dir)), dt);
+            // Try moving perpendicularly
+            if (!moved) {
+                moved |= tryMovePlayer(vecperp(dir), dt) ? true : tryMovePlayer(vecinv(vecperp(dir)), dt);
+            }
         }
     }
 }
