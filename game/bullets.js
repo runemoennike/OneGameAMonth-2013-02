@@ -72,6 +72,11 @@ function drawBullets() {
 }
 
 function checkBulletVsPlayer(b) {
+    if (dist2(b.pos, playerScaledWorldPos()) < pl.size * pl.size * scale * scale) {
+        playerTakeHit(b.type.damage);
+        return true;
+    }
+    return false;
 }
 
 function checkBulletVsEnemies(b) {

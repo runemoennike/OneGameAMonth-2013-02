@@ -114,6 +114,10 @@ function gameLoop() {
     pl.lx = pl.x;
     pl.ly = pl.y;
 
+    if (now - pl.lastDamageTime > pl.hpRegenDelay) {
+        pl.hp = Math.min(pl.fullHp, pl.hp + pl.hpRegen * dt);
+    }
+
     fpsc++;
     if (now - fpst > 1000) {
         document.getElementById("debug_fps").innerHTML = fpsc;

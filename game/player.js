@@ -12,7 +12,12 @@ var pl = {
     hadCollision: false,
     size: 70,
     lastFire: 0,
-    bulletType: BulletType.BUTTERFLY
+    bulletType: BulletType.BUTTERFLY,
+    fullHp: 30,
+    hp: 30,
+    hpRegen: 0.005,
+    hpRegenDelay: 4000,
+    lastDamageTime: 0
 }
 
 
@@ -101,14 +106,21 @@ function drawPlayer(dt) {
     var y = canvasH / 3 * 2;
     var ri = 0;
     var ro = pl.size * scale;
+    console.log(pl.hp);
+    var hpPerc = 1 - Math.max(0, pl.hp / pl.fullHp);
 
     drawPlayer.phase += 0.012 * dt;
 
     var grd = ctx.createRadialGradient(x, y, ri, x, y, ro);
     grd.addColorStop(0, "#000");
     grd.addColorStop(0.4 + Math.cos(drawPlayer.phase) / 50, "#0000AA");
-    grd.addColorStop(0.5 + Math.sin(drawPlayer.phase) / 40, "#AAAAFF");
+
+    r = 170 + Math.floor(hpPerc * 85); g = 170 - Math.floor(hpPerc * 170); b = 255 - Math.floor(hpPerc * 150);
+    grd.addColorStop(0.5 + Math.sin(drawPlayer.phase) / 40, "rgb(" + r + "," + g + "," + b + ")");
     grd.addColorStop(0.7 + Math.cos(drawPlayer.phase) / 20, "#0000FF");
+
+    //r = Math.floor(0 + hpPerc * 128); g = 0; b = 32;
+    //grd.addColorStop(0.9, "rgb(" + r + "," + g + "," + b + ")");
     grd.addColorStop(0.9, "#000022");
 
     // Fill with gradient
@@ -185,4 +197,9 @@ function updateScore(dt) {
     if (pl.score < 0) {
         pl.score = 0;
     }
+}
+
+function playerTakeHit(damage) {
+    pl.hp -= damage;
+    pl.lastDamageTime = new Date().getTime();
 }
