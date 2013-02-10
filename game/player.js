@@ -12,7 +12,7 @@ var pl = {
     hadCollision: false,
     size: 70,
     lastFire: 0,
-    bulletType: BulletType.BANANA
+    bulletType: BulletType.BUTTERFLY
 }
 
 

@@ -98,3 +98,11 @@ function vecinv(v) {
 function vecflip(v) {
     return [v[1], v[0]];
 }
+
+function rndFloat(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function rndInt(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}

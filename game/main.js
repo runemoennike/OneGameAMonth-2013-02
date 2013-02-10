@@ -1,8 +1,8 @@
 
-
 var time;
 var fpsc = 0;
 var fpst = 0;
+var preload;
 
 function init() {
     body = document.body;
@@ -25,7 +25,7 @@ function init() {
     }
 
     document.getElementById("loader").className = "loader";
-
+    asd = 1;
     preload = new createjs.PreloadJS();
     //Install SoundJS as a plugin, then PreloadJS will initialize it automatically.
     preload.installPlugin(createjs.SoundJS);
