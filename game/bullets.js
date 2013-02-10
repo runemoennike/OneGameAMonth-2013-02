@@ -53,7 +53,7 @@ function updateBullets(dt) {
                 }
             }
 
-            if (now - b.startTime > b.lifeTime) {
+            if (now - b.startTime > b.lifeTime || testPointInPolys(b.pos)) {
                 bullets[i] = false;
             }
 

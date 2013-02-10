@@ -106,7 +106,6 @@ function drawPlayer(dt) {
     var y = canvasH / 3 * 2;
     var ri = 0;
     var ro = pl.size * scale;
-    console.log(pl.hp);
     var hpPerc = 1 - Math.max(0, pl.hp / pl.fullHp);
 
     drawPlayer.phase += 0.012 * dt;

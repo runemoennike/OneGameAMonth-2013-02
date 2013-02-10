@@ -99,6 +99,30 @@ function testInsideSectorPolys(sector, test) {
     return false;
 }
 
+function testPointInPolys(test) {
+    
+    var wTest = scaleCoords(test);
+    var tsx = Math.floor(wTest[0] / sectorSize);
+    var tsy = Math.floor(-wTest[1] / sectorSize);
+
+    var testx = test[0]; /// scale + canvasW / scale / 2;
+    var testy = test[1]; /// scale + canvasH / scale / 3 * 2;
+
+    for (var x = -1; x <= 1; x++) {
+        for (var y = -1; y <= 1; y++) {
+            var sx = tsx + x;
+            var sy = tsy + y;
+
+            if (sx >= 0 && sx < numSectorsX && sy >= 0 && sy < numSectorsY) {
+                var sector = sectors[sy * numSectorsX + sx];
+                if(testInsideSectorPolys(sector, test)) {
+                    return true;
+                }
+            }
+        }
+    }
+}
+
 function testPointCollides(test, size) {
     if (noClip) {
         return false;
