@@ -9,7 +9,7 @@ var EnemyType = {
             e.lastTimeBarrage = now;
             e.lastTimeShoot = now;
             e.shootInterval = 100;
-            e.barrageInterval = 1500;
+            e.barrageInterval = 1000 + rndInt(0, 1000);
             e.barrageCount = 0;
         },
         update: function (e, dt) {
@@ -35,11 +35,12 @@ var EnemyType = {
             e.dir = vecnorm([rndFloat(-1, 1), rndFloat(-1, 1)]);
         },
         draw: function (e, dt) {
+            var now = new Date().getTime();
             var x = e.pos[0],
                 y = e.pos[1];
             var size = e.size * scale;
 
-            var r = 100;
+            var r = 25 + Math.floor((now - e.lastTimeBarrage)/e.barrageInterval * 150);
             var g = bl = 0;
 
             ctx.fillStyle = "rgb(" + r + "," + g + "," + bl + ")";

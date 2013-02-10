@@ -57,6 +57,7 @@ function loadComplete(event) {
     playSound("countdown");
 
     spawnEnemy([5000, -1800], EnemyType.HEXAGON);
+    spawnEnemy([6000, -1800], EnemyType.HEXAGON);
 }
 
 
