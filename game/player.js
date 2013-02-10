@@ -72,7 +72,7 @@ function playerShoot() {
     var now = new Date().getTime();
     if (now - pl.lastFire > pl.bulletType.cooldown) {
         pl.lastFire = now;
-        spawnBullet(playerScaledWorldPos(), screenToWorldScaled([mouse.x, mouse.y]), pl.bulletType, playerShoot);
+        spawnBullet(playerScaledWorldPos(), screenToWorldScaled([mouse.x, mouse.y]), pl.bulletType, playerShoot, false);
     }
 }
 

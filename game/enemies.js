@@ -21,7 +21,8 @@ function spawnEnemy(pos, type) {
         type: type,
         size: type.size,
         startTime: new Date().getTime(),
-        speed: type.speed
+        speed: type.speed,
+        hp: type.fullHp
     }
 
     type.spawned(enemy);
@@ -43,8 +44,8 @@ function updateEnemies(dt) {
 
             e.type.update(e);
 
-            if (dist2(e.pos, [pl.x, pl.y]) > 2000 * scale) {
-                //enemies[i] = false;
+            if (dist2(e.pos, [pl.x, pl.y]) > 4000 * 4000 * scale || e.hp <= 0) {
+                enemies[i] = false;
             }
         }
     }

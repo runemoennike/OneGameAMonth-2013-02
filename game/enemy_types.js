@@ -2,7 +2,8 @@
 var EnemyType = {
     HEXAGON: {
         speed: 0.3,
-        size: 120,
+        size: 80,
+        fullHp: 10,
         spawned: function (e) {
             var now = new Date().getTime();
             e.lastDirChangeTime = now;
@@ -26,7 +27,7 @@ var EnemyType = {
             }
 
             if (e.barrageCount < 3 && now - e.lastTimeShoot > e.shootInterval) {
-                spawnBullet([e.pos[0], e.pos[1]], playerScaledWorldPos(), BulletType.PEWPEW, e);
+                spawnBullet([e.pos[0], e.pos[1]], playerScaledWorldPos(), BulletType.PEWPEW, e, true);
                 e.lastTimeShoot = now;
                 e.barrageCount++;
             }
@@ -38,14 +39,18 @@ var EnemyType = {
             var now = new Date().getTime();
             var x = e.pos[0],
                 y = e.pos[1];
-            var size = e.size * scale;
+            var size = e.size;
 
-            var r = 25 + Math.floor((now - e.lastTimeBarrage)/e.barrageInterval * 150);
+            var r = 25 + Math.floor((now - e.lastTimeBarrage) / e.barrageInterval * 150);
             var g = bl = 0;
-
             ctx.fillStyle = "rgb(" + r + "," + g + "," + bl + ")";
-            ctx.strokeStyle = "#FF0000";
-            ctx.lineWidth = 20 * scale;
+            
+            var hpPerc = (1.0 - e.hp / e.type.fullHp);
+            r = 255;
+            g = bl = Math.floor(hpPerc * 255);
+            ctx.strokeStyle = "rgb(" + r + "," + g + "," + bl + ")";
+
+            ctx.lineWidth = Math.max(1, 30 * scale - hpPerc * 30 * scale);
             //ctx.fillRect(x - size, y - size, size, size);
             ctx.beginPath();
             ctx.moveTo(x - size / 4, y - size / 2.3);
@@ -61,8 +66,11 @@ var EnemyType = {
             var eyeSize = Math.max(5, 10 * scale),
                 eyeDir = vecnorm(vecsub(playerScaledWorldPos(), e.pos));
             ctx.fillStyle = "#FF0000";
-            ctx.fillRect(x + eyeDir[0] * 35 * scale - eyeSize/2, y + eyeDir[1] * 35 * scale - eyeSize/2, eyeSize, eyeSize);
+            ctx.fillRect(x + eyeDir[0] * 35 * scale - eyeSize / 2, y + eyeDir[1] * 35 * scale - eyeSize / 2, eyeSize, eyeSize);
 
+        },
+        takeHit: function (e, damage) {
+            e.hp -= damage;
         }
     },
 }

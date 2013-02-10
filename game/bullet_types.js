@@ -4,6 +4,7 @@ var BulletType = {
         speed: 2,
         cooldown: 50,
         lifeTime: 600,
+        damage: 0.3,
         launchAngle: function (state) {
             if (typeof state.bullet_inited === "undefined" || state.bullet_inited != "BANANA") {
                 state.bullet_inited = "BANANA";
@@ -38,6 +39,7 @@ var BulletType = {
         speed: 2,
         cooldown: 50,
         lifeTime: 2000,
+        damage: 0.5,
         launchAngle: function (state) {
             if (typeof state.bullet_inited === "undefined" || state.bullet_inited != "BUTTERFLY") {
                 state.bullet_inited = "BUTTERFLY";
@@ -76,6 +78,7 @@ var BulletType = {
         speed: 2,
         cooldown: 50,
         lifeTime: 2000,
+        damage: 1,
         launchAngle: function (state) {
             return 0;
         },
