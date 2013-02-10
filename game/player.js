@@ -52,7 +52,7 @@ function moveOrGlidePlayer(dir, dt) {
         
         // Try moving perpendicularly
         if (!moved) {
-            moved |= tryMovePlayer(vecflip(dir), dt) ? true : tryMovePlayer(vecinv(vecflip(dir)), dt);
+            moved |= tryMovePlayer(vecperp(dir), dt) ? true : tryMovePlayer(vecinv(vecperp(dir)), dt);
         }
     }
 }

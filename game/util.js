@@ -99,6 +99,10 @@ function vecflip(v) {
     return [v[1], v[0]];
 }
 
+function vecperp(v) {
+    return [-v[1], v[0]];
+}
+
 function rndFloat(min, max) {
     return Math.random() * (max - min) + min;
 }
