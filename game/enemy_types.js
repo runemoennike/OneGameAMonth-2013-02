@@ -22,6 +22,7 @@ var EnemyType = {
             if (now - e.lastTimeBarrage > e.barrageInterval) {
                 e.barrageCount = 0;
                 e.lastTimeBarrage = now;
+                playSound("pewpewpew");
             }
 
             if (e.barrageCount < 3 && now - e.lastTimeShoot > e.shootInterval) {
