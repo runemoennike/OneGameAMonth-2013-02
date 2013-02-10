@@ -5,10 +5,12 @@ var sfxManifest = [
     { src: sfxPath + "countdown.mp3|" + sfxPath + "countdown.ogg", id: "countdown", data: 1 },
     { src: sfxPath + "deathnoise.mp3|" + sfxPath + "deathnoise.ogg", id: "deathnoise", data: 1 },
     { src: sfxPath + "pewpewpew.mp3|" + sfxPath + "pewpewpew.ogg", id: "pewpewpew", data: 1 },
+    { src: sfxPath + "blip.mp3|" + sfxPath + "blip.ogg", id: "blip", data: 1 },
 ];
 
 var sndLevels = {
-    "pewpewpew": 0.2
+    "pewpewpew": 0.2,
+    "blip": 0.15
 }
 
 function playSound(id) {

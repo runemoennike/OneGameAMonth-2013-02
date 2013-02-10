@@ -71,9 +71,9 @@ function drawCountdown(dt) {
         countDown.value--;
         countDown.phaseStart = now;
 
-        if (countDown.value > 0) {
-            playSound("countdown");
-        }
+        //if (countDown.value > 0) {
+        //    playSound("countdown");
+        //}
     }
 
     if (countDown.value == 0) {
