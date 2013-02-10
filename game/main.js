@@ -15,7 +15,7 @@ function init() {
 
     sectorSize = sectorBaseSize * scale;
     pl.x = pl.lx = sectorSize * (numSectorsX / 2.0 - 0.5);
-    pl.y = pl.ly = -sectorSize;
+    pl.y = pl.ly = -sectorSize * 2;
 
     createjs.FlashPlugin.BASE_PATH = "lib/"
     if (!createjs.SoundJS.checkPlugin(true)) {
@@ -56,8 +56,8 @@ function loadComplete(event) {
 
     playSound("countdown");
 
-    spawnEnemy([5000, -1800], EnemyType.HEXAGON);
-    spawnEnemy([6000, -1800], EnemyType.HEXAGON);
+    spawnEnemy([5000, -3800], EnemyType.HEXAGON);
+    spawnEnemy([6000, -3800], EnemyType.HEXAGON);
 }
 
 

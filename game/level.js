@@ -8,32 +8,28 @@ var lastCollidedLineSegment;
 
 function generateSectors() {
     sectors = new Array(numSectorsX * numSectorsY);
-    var numShapes, avgSize, pointiness, complexity, offX, offY;
+    var numShapes, avgSize, pointiness, complexity, offX, offY, staticX, staticY;
 
     for (var x = 0; x < numSectorsX; x++) {
         for (var y = 0; y < numSectorsY; y++) {
             offX = x * sectorBaseSize;
             offY = -y * sectorBaseSize;
             if (x == 0 || x == numSectorsX - 1 || y == 0 || y == numSectorsY - 1) {
-                numShapes = 5;
-                avgSize = sectorBaseSize / 3;
-                pointiness = 1.0;
-                complexity = 3;
-                if (x == 0)
-                    staticX = - sectorBaseSize / 2;
-                if (y == 0)
-                    staticY = sectorBaseSize / 2;
-                if (x == numSectorsX - 1)
-                    staticX = (numSectorsX + 1.5) * sectorBaseSize;
-                if (y == numSectorsY - 1)
-                    staticY = (numSectorsY + 1.5) * sectorBaseSize;
+                sectors[y * numSectorsX + x] = [
+                    //[[offX, offY], [offX + sectorBaseSize, offY], [offX + sectorBaseSize, offY + sectorBaseSize], [offX, offY + sectorBaseSize]],
+                    generateShape(offX + sectorBaseSize / 2, offY - sectorBaseSize / 2, sectorBaseSize / 2, sectorBaseSize / 2 * 1.2, 5)
+                ];
+            } else if (x == 3 && y == 2) {
+                sectors[y * numSectorsX + x] = [];
             } else {
                 numShapes = 5;
                 avgSize = 300;
                 pointiness = 1.0;
                 complexity = 7;
+                staticX = false;
+                staticY = false;
+                sectors[y * numSectorsX + x] = generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity);
             }
-            sectors[y * numSectorsX + x] = generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity);
         }
     }
 
@@ -64,8 +60,8 @@ function generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity, 
     var maxY = offY + sectorBaseSize;
 
     for (var s = 0; s < numShapes; s++) {
-        var cx = staticX ? staticX : Math.random() * (maxX - minX) + minX;
-        var cy = staticY ? staticY : Math.random() * (maxY - minY) + minY;
+        var cx = Math.random() * (maxX - minX) + minX;
+        var cy = Math.random() * (maxY - minY) + minY;
         var numPoints = Math.floor(3 + complexity * Math.random());
         shapes[s] = generateShape(cx, cy, minR, maxR, numPoints);
     }
@@ -151,10 +147,10 @@ function testPointCollides(test, size) {
     var testx = test[0]; /// scale + canvasW / scale / 2;
     var testy = test[1]; /// scale + canvasH / scale / 3 * 2;
 
-    if (testx < 0 || testx > numSectorsX * sectorBaseSize || testy > 0 || testy < -numSectorsY * sectorBaseSize) {
-        lastCollidedLineSegment = false;
-        return true;
-    }
+    //if (testx < 0 || testx > numSectorsX * sectorBaseSize || testy > 0 || testy < -numSectorsY * sectorBaseSize) {
+    //    lastCollidedLineSegment = false;
+    //    return true;
+    //}
 
     for (var x = -1; x <= 1; x++) {
         for (var y = -1; y <= 1; y++) {
