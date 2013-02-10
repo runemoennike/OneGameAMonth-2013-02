@@ -44,7 +44,7 @@ function updateEnemies(dt) {
 
             e.type.update(e);
 
-            if (dist2(e.pos, [pl.x, pl.y]) > 4000 * 4000 * scale || e.hp <= 0) {
+            if (dist2(e.pos, playerScaledWorldPos()) > 4000 * 4000 * scale || e.hp <= 0) {
                 enemies[i] = false;
             }
         }
