@@ -142,10 +142,6 @@ function drawShapes(shps) {
         }
         ctx.closePath();
 
-        if (ctx.isPointInPath(canvasW / 2, canvasH / 3 * 2)) {
-            pl.hadCollision = true;
-        }
-
         ctx.stroke();
         ctx.fill();
     }
