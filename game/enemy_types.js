@@ -18,12 +18,13 @@ var EnemyType = {
             if (now - e.lastDirChangeTime > 2000) {
                 e.dir = vecnorm([rndFloat(-1, 1), rndFloat(-1, 1)]);
                 e.lastDirChangeTime = now;
+                playSound("blip");
             }
 
             if (now - e.lastTimeBarrage > e.barrageInterval) {
                 e.barrageCount = 0;
                 e.lastTimeBarrage = now;
-                playSound("pewpewpew");
+                playSound(BulletType.PEWPEW.sound);
             }
 
             if (e.barrageCount < 3 && now - e.lastTimeShoot > e.shootInterval) {

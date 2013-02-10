@@ -80,6 +80,7 @@ function playerShoot() {
     if (now - pl.lastFire > pl.bulletType.cooldown) {
         pl.lastFire = now;
         spawnBullet(playerScaledWorldPos(), screenToWorldScaled([mouse.x, mouse.y]), pl.bulletType, playerShoot, false);
+        playSound(pl.bulletType.sound);
     }
 }
 

@@ -41,7 +41,7 @@ function init() {
 function loadComplete(event) {
     document.getElementById("loader").className = "";
     document.getElementById("content").className = "running";
-
+     
     window.addEventListener('keydown', doKeyDown, true);
     window.addEventListener('keyup', doKeyUp, true);
 

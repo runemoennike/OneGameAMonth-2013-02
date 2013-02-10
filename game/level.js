@@ -8,7 +8,7 @@ var lastCollidedLineSegment;
 
 function generateSectors() {
     sectors = new Array(numSectorsX * numSectorsY);
-    var numShapes, avgSize, pointiness, complexity, offX, offY, staticX, staticY;
+    var numShapes, avgSize, pointiness, complexity, offX, offY;
 
     for (var x = 0; x < numSectorsX; x++) {
         for (var y = 0; y < numSectorsY; y++) {
@@ -26,8 +26,6 @@ function generateSectors() {
                 avgSize = 300;
                 pointiness = 1.0;
                 complexity = 7;
-                staticX = false;
-                staticY = false;
                 sectors[y * numSectorsX + x] = generateShapes(offX, offY, numShapes, avgSize, pointiness, complexity);
             }
         }
