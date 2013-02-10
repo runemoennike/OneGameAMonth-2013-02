@@ -104,11 +104,12 @@ function testPointCollides(test, size) {
         return false;
     }
 
-    var tsx = Math.floor(test[0] / sectorSize + 0.5);
-    var tsy = Math.floor(-test[1] / sectorSize + 0.5);
+    var wTest = scaleCoords(test);
+    var tsx = Math.floor(wTest[0] / sectorSize);
+    var tsy = Math.floor(-wTest[1] / sectorSize);
 
-    var testx = test[0] / scale + canvasW / scale / 2;
-    var testy = test[1] / scale + canvasH / scale / 3 * 2;
+    var testx = test[0]; /// scale + canvasW / scale / 2;
+    var testy = test[1]; /// scale + canvasH / scale / 3 * 2;
 
     for (var x = -1; x <= 1; x++) {
         for (var y = -1; y <= 1; y++) {
@@ -197,7 +198,7 @@ function screenToWorld(v) {
     return [
         v[0] + pl.x,
         v[1] + pl.y
-        ]
+    ]
 }
 
 
@@ -206,4 +207,19 @@ function screenToWorldScaled(v) {
         (v[0] + pl.x) / scale,
         (v[1] + pl.y) / scale
     ]
+}
+
+function unscaleCoords(v) {
+    return [
+        (v[0] + canvasW / 2) / scale,
+        (v[1] + canvasH / 3 * 2) / scale
+    ];
+}
+
+function scaleCoords(v) {
+    return [
+        v[0] * scale - canvasW / 2,
+        v[1] * scale - canvasW / 3 * 2
+    ];
+
 }

@@ -55,6 +55,8 @@ function loadComplete(event) {
     rafId = requestAnimationFrame(gameLoop);
 
     playSound("countdown");
+
+    spawnEnemy([5000, -1800], EnemyType.HEXAGON);
 }
 
 
@@ -75,6 +77,9 @@ function gameLoop() {
             playerShoot();
         }
     }
+    if (gamestate == GameState.PLAYING) {
+        updateEnemies(dt);
+    }
     updateBullets(dt);
 
     updateScore(dt);
@@ -85,6 +90,7 @@ function gameLoop() {
     ctx.scale(scale, scale);
     drawSectors();
     drawBullets();
+    drawEnemies(dt);
 
     ctx.restore();
 

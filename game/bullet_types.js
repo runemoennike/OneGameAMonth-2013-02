@@ -32,12 +32,6 @@ var BulletType = {
             ctx.moveTo(x, y);
             ctx.lineTo(tailX, tailY);
             ctx.stroke();
-
-            //var r = g = 255;
-            //var bl = Math.floor(100 + Math.random() * 50);
-            //ctx.fillStyle = "rgb(" + r + "," + g + "," + bl + ")";
-            //ctx.fillRect(x - size, y - size, size, size);
-
         }
     },
     BUTTERFLY: {
@@ -74,8 +68,37 @@ var BulletType = {
             var r = g = Math.floor(150 + Math.random() * 50);
             var bl = 255;
             ctx.fillStyle = "rgb(" + r + "," + g + "," + bl + ")";
-            ctx.fillRect(x - size, y - size, size, size);
+            ctx.fillRect(x - size / 2, y - size / 2, size, size);
 
         }
+    },
+    PEWPEW: {
+        speed: 2,
+        cooldown: 50,
+        lifeTime: 2000,
+        launchAngle: function (state) {
+            return 0;
+        },
+        spawned: function (b) {
+        },
+        update: function (b) {
+        },
+        draw: function (b) {
+            var x = b.pos[0],
+                y = b.pos[1];
+            var size = Math.max(5, 5 * scale);
+
+            var tailX = x - b.direction[0] * 50 * scale;
+            var tailY = y - b.direction[1] * 50 * scale;
+            ctx.strokeStyle = "#FF0000";
+            ctx.lineWidth = size;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(tailX, tailY);
+            ctx.stroke();
+
+        }
+
+
     }
 }

@@ -49,7 +49,7 @@ function moveOrGlidePlayer(dir, dt) {
         } else {
             moved |= tryMovePlayer(w, dt);
         }
-        
+
         // Try moving perpendicularly
         if (!moved) {
             moved |= tryMovePlayer(vecperp(dir), dt) ? true : tryMovePlayer(vecinv(vecperp(dir)), dt);
@@ -60,7 +60,7 @@ function moveOrGlidePlayer(dir, dt) {
 function tryMovePlayer(dir, dt) {
     var sm = dt * pl.speed * scale;
 
-    if (!testPointCollides([pl.x + dir[0] * sm, pl.y + dir[1] * sm], pl.size * 1.2)) {
+    if (!testPointCollides(unscaleCoords([pl.x + dir[0] * sm, pl.y + dir[1] * sm]), pl.size * 1.2)) {
         pl.x += dir[0] * sm;
         pl.y += dir[1] * sm;
         return true;
