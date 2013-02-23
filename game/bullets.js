@@ -20,6 +20,7 @@ function spawnBullet(pos, target, type, stateObj, hostile) {
         pos: pos,
         target: target,
         direction: vecrot(vecnorm(vecsub(target, pos)), angle),
+        speed: type.speed,
         type: type,
         startTime: new Date().getTime(),
         lifeTime: type.lifeTime,
@@ -39,7 +40,7 @@ function updateBullets(dt) {
             c++;
 
             var b = bullets[i];
-            vecaddto(b.pos, vecmulscalar(b.direction, b.type.speed * dt));
+            vecaddto(b.pos, vecmulscalar(b.direction, b.speed * dt));
 
             b.type.update(b);
             
@@ -72,7 +73,7 @@ function drawBullets() {
 }
 
 function checkBulletVsPlayer(b) {
-    if (dist2(b.pos, playerScaledWorldPos()) < pl.size * pl.size * scale * scale) {
+    if (dist2(b.pos, playerScaledWorldPos()) < pl.size * pl.size / 2) {
         playerTakeHit(b.type.damage);
         return true;
     }
@@ -84,7 +85,7 @@ function checkBulletVsEnemies(b) {
     for(var i = 0; i < MAX_ENEMIES; i ++) {
         if (typeof enemies[i] !== 'undefined' && enemies[i] !== false) {
             e = enemies[i];
-            if (dist2(b.pos, e.pos) < e.size * e.size * scale * scale / 2) {
+            if (dist2(b.pos, e.pos) < e.size * e.size / 2) {
                 e.type.takeHit(e, b.type.damage);
                 return true;
             }

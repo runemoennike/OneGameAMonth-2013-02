@@ -55,9 +55,6 @@ function loadComplete(event) {
     rafId = requestAnimationFrame(gameLoop);
 
     playSound("countdown");
-
-    spawnEnemy([5000, -3800], EnemyType.HEXAGON);
-    spawnEnemy([6000, -3800], EnemyType.HEXAGON);
 }
 
 
@@ -127,6 +124,7 @@ function gameLoop() {
 
 
     document.getElementById("debug_frametime").innerHTML = dt;
+    document.getElementById("debug_hp").innerHTML = Math.round(pl.hp);
 }
 
 

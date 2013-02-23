@@ -5,6 +5,7 @@ var pl = {
     lx: 0,
     ly: 0,
     speed: 1.0,
+    healShieldTime: 1000,
     canMove: false,
     score: 0,
     scoreState: ScoreState.GAINING,
@@ -12,12 +13,13 @@ var pl = {
     hadCollision: false,
     size: 70,
     lastFire: 0,
-    bulletType: BulletType.BUTTERFLY,
+    bulletType: BulletType.BANANA,
     fullHp: 30,
     hp: 30,
     hpRegen: 0.005,
     hpRegenDelay: 4000,
-    lastDamageTime: 0
+    lastDamageTime: 0,
+    lastHealTime: 0
 }
 
 
@@ -123,13 +125,26 @@ function drawPlayer(dt) {
 
     //r = Math.floor(0 + hpPerc * 128); g = 0; b = 32;
     //grd.addColorStop(0.9, "rgb(" + r + "," + g + "," + b + ")");
-    grd.addColorStop(0.9, "#000022");
+    if (hasHealShield()) {
+        grd.addColorStop(0.9 + Math.cos(drawPlayer.phase) / 20, "#8B7500");
+        grd.addColorStop(1.0, "#000022");
+
+    } else {
+        grd.addColorStop(0.9, "#000022");
+    }
+
+    //#8B7500
+    //#00C5CD
 
     // Fill with gradient
     ctx.beginPath();
     ctx.arc(x, y, ro, 0, 2 * Math.PI, false);
     ctx.fillStyle = grd;
     ctx.fill();
+}
+
+function hasHealShield() {
+    return new Date().getTime() - pl.lastHealTime < pl.healShieldTime;
 }
 
 function drawAim(dt) {
@@ -202,6 +217,21 @@ function updateScore(dt) {
 }
 
 function playerTakeHit(damage) {
-    pl.hp -= damage;
-    pl.lastDamageTime = new Date().getTime();
+    var now = new Date().getTime();
+
+    if (damage < 0) {
+        pl.hp -= damage;
+        pl.lastHealTime = now;
+    } else if (damage > 0 && ! hasHealShield()) {
+        pl.hp -= damage;
+        pl.lastDamageTime = now;
+    }
+
+    if (pl.hp > pl.fullHp) {
+        pl.hp = pl.fullHp;
+    } else if (pl.hp < 0) {
+        pl.hp = 0;
+    }
+
+    
 }

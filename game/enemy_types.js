@@ -4,13 +4,17 @@ var EnemyType = {
         speed: 0.3,
         size: 80,
         fullHp: 10,
+        currentlyActive: 0,
+        maxActive: 10,
         spawned: function (e) {
+            e.type.currentlyActive++;
+
             var now = new Date().getTime();
             e.lastDirChangeTime = now;
-            e.lastTimeBarrage = now;
+            e.lastTimeBarrage = now + rndInt(0, 10000);
             e.lastTimeShoot = now;
             e.shootInterval = 100;
-            e.barrageInterval = 1000 + rndInt(0, 1000);
+            e.barrageInterval = 3000 + rndInt(0, 1000);
             e.barrageCount = 0;
         },
         update: function (e, dt) {
@@ -72,6 +76,22 @@ var EnemyType = {
         },
         takeHit: function (e, damage) {
             e.hp -= damage;
+        },
+        died: function (e) {
+            for (var i = 0; i < 3; i++) {
+                var pos = [e.pos[0] + rndInt(-20, 20) * scale,
+                            e.pos[1] + rndInt(-20, 20) * scale];
+                spawnBullet(pos, playerScaledWorldPos(), BulletType.POWERUP_HEAL, e, true);
+            }
+            for (var i = 0; i < 15; i++) {
+                var pos = [e.pos[0] + rndInt(-20, 20) * scale,
+                            e.pos[1] + rndInt(-20, 20) * scale];
+                spawnBullet(pos, pos, BulletType.EFFECT_HEXAGON_DEATH, e, true);
+            }
+            playSound("pfs");
+        },
+        purged: function(e) {
+            e.type.currentlyActive--;
         }
     },
 }

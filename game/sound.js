@@ -7,6 +7,7 @@ var sfxManifest = [
     { src: sfxPath + "pewpewpew.mp3|" + sfxPath + "pewpewpew.ogg", id: "pewpewpew", data: 1 },
     { src: sfxPath + "blip.mp3|" + sfxPath + "blip.ogg", id: "blip", data: 1 },
     { src: sfxPath + "trdr.mp3|" + sfxPath + "trdr.ogg", id: "trdr", data: 1 },
+    { src: sfxPath + "pfs.mp3|" + sfxPath + "pfs.ogg", id: "pfs", data: 1 },
 ];
 
 var sndMeta = {
@@ -15,6 +16,7 @@ var sndMeta = {
     "trdr": { vol: 0.9, interrupt: createjs.SoundJS.INTERRUPT_ANY },
     "bgmusic_1": { vol: 1, interrupt: createjs.SoundJS.INTERRUPT_ANY },
     "countdown": { vol: 1, interrupt: createjs.SoundJS.INTERRUPT_ANY },
+    "pfs": { vol: 1, interrupt: createjs.SoundJS.INTERRUPT_ANY },
 }
 
 function playSound(id) {

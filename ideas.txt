@@ -5,3 +5,7 @@ Timer, length of song. When it runs out, you die. Must make it through the level
 Enemies, hexagons come at you.
 
 Some enemies shoot, some kemikaze.
+
+Print "Hurry up!" or "You're doing well!" aso on screen depending on player position and time left.
+
+When enemies die, spawn blue blobs that fly to the player and heal him

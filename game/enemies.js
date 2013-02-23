@@ -1,5 +1,6 @@
 ﻿var MAX_ENEMIES = 10;
 var enemies = new Array(MAX_ENEMIES);
+var numEnemies = 0;
 
 
 function spawnEnemy(pos, type) {
@@ -28,6 +29,7 @@ function spawnEnemy(pos, type) {
     type.spawned(enemy);
 
     enemies[i] = enemy;
+    return i;
 }
 
 function updateEnemies(dt) {
@@ -44,13 +46,44 @@ function updateEnemies(dt) {
 
             e.type.update(e);
 
-            if (dist2(e.pos, playerScaledWorldPos()) > 4000 * 4000 * scale || e.hp <= 0) {
+            if (dist2(e.pos, playerScaledWorldPos()) > 4000 * 4000 * scale) {
+                enemies[i].type.purged(e);
+                enemies[i] = false;
+            } else if (e.hp <= 0) {
+                enemies[i].type.died(e);
+                enemies[i].type.purged(e);
                 enemies[i] = false;
             }
         }
     }
 
+    numEnemies = c;
     document.getElementById("debug_enemies").innerHTML = c;
+
+    if (numEnemies < MAX_ENEMIES) {
+        spawnRandomEnemy();
+    }
+}
+
+function spawnRandomEnemy() {
+    var plPos = playerScaledWorldPos();
+    var type = EnemyType.HEXAGON;
+
+    if (type.currentlyActive < type.maxActive) {
+        for (var i = 0; i < 10; i++) {
+            var theta = rndFloat(-Math.PI, Math.PI),
+                r = rndInt(1000 * scale, 3000 * scale);
+            var pos = [plPos[0] + Math.cos(theta) * r,
+                        plPos[1] + Math.sin(theta) * r];
+
+            if (!testPointInPolys(pos) && !testPointCollides(pos, type.size * 1.2)) {
+                spawnEnemy(pos, type);
+
+                
+                break;
+            }
+        }
+    }
 }
 
 function tryMoveEnemy(e, dt) {
