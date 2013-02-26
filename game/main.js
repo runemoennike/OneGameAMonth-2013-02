@@ -125,6 +125,7 @@ function gameLoop() {
         }
         if (pl.hp <= 0 || now - playStartTime > playLength) {
             gamestate = GameState.DEAD;
+            document.getElementById("credits").style.display = "block";
             createjs.Sound.stop();
         }
     } else if (gamestate == GameState.DEAD) {
@@ -157,8 +158,8 @@ function drawDeadScreen() {
         }
     }
 
-    ctx.globalAlpha = 0.5;
-    ctx.fillStyle = "#000000";
+    ctx.globalAlpha = 0.7;
+    ctx.fillStyle = "#000";
     ctx.font = "bold " + (400*scale) + "px Sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";

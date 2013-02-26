@@ -9,6 +9,8 @@ var sfxManifest = [
     { src: sfxPath + "trdr.mp3|" + sfxPath + "trdr.ogg", id: "trdr", data: 1 },
     { src: sfxPath + "pfs.mp3|" + sfxPath + "pfs.ogg", id: "pfs", data: 1 },
     { src: sfxPath + "pling.mp3|" + sfxPath + "pling.ogg", id: "pling", data: 1 },
+    { src: sfxPath + "wee.mp3|" + sfxPath + "wee.ogg", id: "wee", data: 1 },
+    { src: sfxPath + "ouch.mp3|" + sfxPath + "ouch.ogg", id: "ouch", data: 1 },
 ];
 
 var sndMeta = {
@@ -20,6 +22,8 @@ var sndMeta = {
     "pfs": { vol: 1, interrupt: createjs.Sound.INTERRUPT_ANY, loop: false, offset: 0 },
     "deathnoise": { vol: 0.8, interrupt: createjs.Sound.INTERRUPT_NONE, loop: true, offset: 50 },
     "pling": { vol: 1, interrupt: createjs.Sound.INTERRUPT_ANY, loop: false, offset: 0 },
+    "wee": { vol: 0.8, interrupt: createjs.Sound.INTERRUPT_NONE, loop: false, offset: 0 },
+    "ouch": { vol: 0.8, interrupt: createjs.Sound.INTERRUPT_ANY, loop: false, offset: 0 },
 }
 
 function playSound(id) {

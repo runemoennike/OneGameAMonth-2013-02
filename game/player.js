@@ -225,9 +225,11 @@ function playerTakeHit(damage) {
     if (damage < 0) {
         pl.hp -= damage;
         pl.lastHealTime = now;
+        playSound("wee");
     } else if (damage > 0 && ! hasHealShield()) {
         pl.hp -= damage;
         pl.lastDamageTime = now;
+        playSound("ouch");
     }
 
     if (pl.hp > pl.fullHp) {
