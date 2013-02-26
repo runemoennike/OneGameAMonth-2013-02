@@ -18,7 +18,7 @@ function init() {
     pl.y = pl.ly = -sectorSize * 2;
 
     createjs.FlashPlugin.BASE_PATH = "lib/"
-    if (!createjs.SoundJS.checkPlugin(true)) {
+    if (!createjs.Sound.initializeDefaultPlugins()) {
         document.getElementById("error").style.display = "block";
         document.getElementById("content").style.display = "none";
         return;
@@ -27,8 +27,8 @@ function init() {
     document.getElementById("loader").className = "loader";
     asd = 1;
     preload = new createjs.PreloadJS();
-    //Install SoundJS as a plugin, then PreloadJS will initialize it automatically.
-    preload.installPlugin(createjs.SoundJS);
+    //Install Sound as a plugin, then PreloadJS will initialize it automatically.
+    preload.installPlugin(createjs.Sound);
 
     preload.onComplete = loadComplete;
 
@@ -117,7 +117,7 @@ function gameLoop() {
         }
         if (pl.hp <= 0) {
             gamestate = GameState.DEAD;
-            createjs.SoundJS.stop();
+            createjs.Sound.stop();
         }
     } else if (gamestate == GameState.DEAD) {
         drawDeadScreen();
@@ -154,6 +154,6 @@ function drawDeadScreen() {
 
 function kill() {
     if (preload != null) { preload.close(); }
-    createjs.SoundJS.stop();
+    createjs.Sound.stop();
     cancelAnimationFrame(rafId);
 }
