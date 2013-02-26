@@ -27,6 +27,33 @@ function drawScore(dt) {
 
 }
 
+function drawMultiplier(dt) {
+    if (typeof drawMultiplier.phase == 'undefined') {
+        drawMultiplier.phase = 0;
+    }
+    drawMultiplier.phase += 0.01 * dt;
+
+    var intMul = Math.floor(pl.multiplier);
+
+    if (pl.multiplier <= 1) {
+        return;
+    }
+
+    var fontSize = 150 * scale;
+    var red = Math.min(255, (intMul - 1) * 10);
+    var green = Math.min(255, (intMul - 1) * 5);
+    var blue = Math.max(0, 255 - (intMul - 1) * 10);
+
+    fontSize += Math.abs(Math.cos(drawMultiplier.phase * (intMul / 10))) * 20 * scale;
+    
+    ctx.fillStyle = "rgb(" + red + ", " + green + ", " + blue + ")";
+    ctx.font = "bold " + fontSize + "px Sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText("x" + intMul, canvasW / 2.0, 0);
+
+}
+
 function drawTimer(dt) {
     var now = new Date().getTime();
     var timeLeft = playLength - (now - playStartTime);

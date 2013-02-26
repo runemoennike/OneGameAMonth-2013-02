@@ -53,6 +53,7 @@ function updateEnemies(dt) {
                 enemies[i].type.died(e);
                 enemies[i].type.purged(e);
                 enemies[i] = false;
+                playerKilledEnemy();
             }
         }
     }

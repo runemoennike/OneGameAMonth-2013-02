@@ -107,6 +107,7 @@ function gameLoop() {
         if (gamestate == GameState.PLAYING) {
             drawTimer(dt);
             drawScore(dt);
+            drawMultiplier(dt);
         }
 
         pl.lx = pl.x;
@@ -114,6 +115,9 @@ function gameLoop() {
 
         if (now - pl.lastDamageTime > pl.hpRegenDelay) {
             pl.hp = Math.min(pl.fullHp, pl.hp + pl.hpRegen * dt);
+        }
+        if (now - pl.lastMultiplierIncreaseTime > pl.multiplierTime && pl.multiplier > 1) {
+            pl.multiplier = Math.max(1.0, pl.multiplier - 0.01 * dt);
         }
         if (pl.hp <= 0) {
             gamestate = GameState.DEAD;

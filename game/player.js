@@ -19,7 +19,10 @@ var pl = {
     hpRegen: 0.005,
     hpRegenDelay: 4000,
     lastDamageTime: 0,
-    lastHealTime: 0
+    lastHealTime: 0,
+    multiplier: 1,
+    lastMultiplierIncreaseTime: 0,
+    multiplierTime: 5000
 }
 
 
@@ -196,7 +199,7 @@ function drawAim(dt) {
 function updateScore(dt) {
     var now = new Date().getTime();
     if (pl.y < pl.ly) {
-        pl.score += (pl.ly - pl.y);
+        pl.score += (pl.ly - pl.y) * pl.multiplier;
         pl.scoreState = ScoreState.GAINING;
         pl.lastScoreGainTime = now;
         floorArrows.isOn = false;
@@ -232,6 +235,9 @@ function playerTakeHit(damage) {
     } else if (pl.hp < 0) {
         pl.hp = 0;
     }
+}
 
-    
+function playerKilledEnemy() {
+    pl.multiplier += 1;
+    pl.lastMultiplierIncreaseTime = new Date().getTime();
 }
