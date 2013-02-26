@@ -76,6 +76,7 @@ var EnemyType = {
         },
         takeHit: function (e, damage) {
             e.hp -= damage;
+            playSound("pling");
         },
         died: function (e) {
             for (var i = 0; i < 3; i++) {
