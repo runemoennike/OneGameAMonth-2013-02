@@ -41,7 +41,7 @@ function init() {
 function loadComplete(event) {
     document.getElementById("loader").className = "";
     document.getElementById("content").className = "running";
-     
+
     window.addEventListener('keydown', doKeyDown, true);
     window.addEventListener('keyup', doKeyUp, true);
 
@@ -64,55 +64,64 @@ function gameLoop() {
         dt = now - (time || now);
     time = now;
 
-    ctx.save();
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (gamestate != GameState.DEAD) {
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (pl.canMove) {
-        movePlayer(dt);
+        if (pl.canMove) {
+            movePlayer(dt);
 
-        if (mouse.b) {
-            playerShoot();
+            if (mouse.b) {
+                playerShoot();
+            }
         }
-    }
-    if (gamestate == GameState.PLAYING) {
-        updateEnemies(dt);
-    }
-    updateBullets(dt);
+        if (gamestate == GameState.PLAYING) {
+            updateEnemies(dt);
+        }
+        updateBullets(dt);
 
-    updateScore(dt);
+        updateScore(dt);
 
-    drawFloor(dt);
+        drawFloor(dt);
 
-    ctx.translate(-pl.x, -pl.y);
-    ctx.scale(scale, scale);
-    drawSectors();
-    drawBullets();
-    drawEnemies(dt);
+        ctx.translate(-pl.x, -pl.y);
+        ctx.scale(scale, scale);
+        drawSectors();
+        drawBullets();
+        drawEnemies(dt);
 
-    ctx.restore();
+        ctx.restore();
 
-    if (floorArrows.isOn) {
-        drawFloorArrows(dt);
-    }
+        if (floorArrows.isOn) {
+            drawFloorArrows(dt);
+        }
 
-    drawPlayer(dt);
-    drawAim(dt);
+        drawPlayer(dt);
+        drawAim(dt);
 
-    if (gamestate == GameState.COUNTDOWN) {
-        drawCountdown();
-    }
+        if (gamestate == GameState.COUNTDOWN) {
+            drawCountdown();
+        }
 
-    if (gamestate == GameState.PLAYING) {
-        drawTimer(dt);
-        drawScore(dt);
-    }
+        if (gamestate == GameState.PLAYING) {
+            drawTimer(dt);
+            drawScore(dt);
+        }
 
-    pl.lx = pl.x;
-    pl.ly = pl.y;
+        pl.lx = pl.x;
+        pl.ly = pl.y;
 
-    if (now - pl.lastDamageTime > pl.hpRegenDelay) {
-        pl.hp = Math.min(pl.fullHp, pl.hp + pl.hpRegen * dt);
+        if (now - pl.lastDamageTime > pl.hpRegenDelay) {
+            pl.hp = Math.min(pl.fullHp, pl.hp + pl.hpRegen * dt);
+        }
+        if (pl.hp <= 0) {
+            gamestate = GameState.DEAD;
+            createjs.SoundJS.stop();
+        }
+    } else if (gamestate == GameState.DEAD) {
+        drawDeadScreen();
+        playSound("deathnoise");
     }
 
     fpsc++;
@@ -128,6 +137,19 @@ function gameLoop() {
 }
 
 
+function drawDeadScreen() {
+    var bsx = canvasW / 50,
+        bsy = canvasH / 50;
+
+    for (var x = 0; x < canvasW; x += bsx) {
+        for (var y = 0; y < canvasH; y += bsy) {
+            var l = rndInt(0, 255);
+            ctx.fillStyle = "rgb(" + l + "," + l + "," + l + ")";
+            ctx.fillRect(x, y, bsx, bsy);
+        }
+    }
+
+}
 
 
 function kill() {

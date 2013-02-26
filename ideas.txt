@@ -8,4 +8,6 @@ Some enemies shoot, some kemikaze.
 
 Print "Hurry up!" or "You're doing well!" aso on screen depending on player position and time left.
 
-When enemies die, spawn blue blobs that fly to the player and heal him
+Multiplier when killing enemies, x2, x3, x4 aso that gives you more points when moving forward after having killed an enemy. Lasts for a while, stacks when killing more.
+
+Sound on bullet impact.
