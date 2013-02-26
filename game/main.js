@@ -9,13 +9,8 @@ function init() {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
 
-    canvasW = canvas.width = innerWidth;
-    canvasH = canvas.height = innerHeight;
-    scale = Math.sqrt((canvasW * canvasW + canvasH * canvasH)) / Math.sqrt((1920 * 1920) + (1080 * 1080));
-
-    sectorSize = sectorBaseSize * scale;
-    pl.x = pl.lx = sectorSize * (numSectorsX / 2.0 - 0.5);
-    pl.y = pl.ly = -sectorSize * 2;
+    setSizes();
+    window.onresize = setSizes;
 
     createjs.FlashPlugin.BASE_PATH = "lib/"
     if (!createjs.Sound.initializeDefaultPlugins()) {
@@ -25,7 +20,6 @@ function init() {
     }
 
     document.getElementById("loader").className = "loader";
-    asd = 1;
     preload = new createjs.PreloadJS();
     //Install Sound as a plugin, then PreloadJS will initialize it automatically.
     preload.installPlugin(createjs.Sound);
@@ -36,6 +30,16 @@ function init() {
 
     //Load the manifest and pass 'true' to start loading immediately. Otherwise, you can call load() manually.
     preload.loadManifest(sfxManifest, true);
+}
+
+function setSizes() {
+    canvasW = canvas.width = innerWidth;
+    canvasH = canvas.height = innerHeight;
+    scale = Math.sqrt((canvasW * canvasW + canvasH * canvasH)) / Math.sqrt((1920 * 1920) + (1080 * 1080));
+
+    sectorSize = sectorBaseSize * scale;
+    pl.x = pl.lx = sectorSize * (numSectorsX / 2.0 - 0.5);
+    pl.y = pl.ly = -sectorSize * 2;
 }
 
 function loadComplete(event) {
@@ -119,7 +123,7 @@ function gameLoop() {
         if (now - pl.lastMultiplierIncreaseTime > pl.multiplierTime && pl.multiplier > 1) {
             pl.multiplier = Math.max(1.0, pl.multiplier - 0.01 * dt);
         }
-        if (pl.hp <= 0) {
+        if (pl.hp <= 0 || now - playStartTime > playLength) {
             gamestate = GameState.DEAD;
             createjs.Sound.stop();
         }
@@ -152,6 +156,14 @@ function drawDeadScreen() {
             ctx.fillRect(x, y, bsx, bsy);
         }
     }
+
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = "#000000";
+    ctx.font = "bold " + (400*scale) + "px Sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(Math.floor(pl.score), canvasW / 2, canvasH / 2);
+    ctx.globalAlpha = 1.0;
 
 }
 
