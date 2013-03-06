@@ -11,11 +11,11 @@ var EnemyType = {
 
             var now = new Date().getTime();
             e.lastDirChangeTime = now;
-            e.lastTimeBarrage = now + rndInt(0, 10000);
+            e.lastTimeBarrage = now + rndInt(0, 2000);
             e.lastTimeShoot = now;
             e.shootInterval = 100;
-            e.barrageInterval = 3000 + rndInt(0, 1000);
-            e.barrageCount = 0;
+            e.barrageInterval = 2000 + rndInt(0, 1000);
+            e.barrageCount = 3;
         },
         update: function (e, dt) {
             var now = new Date().getTime();

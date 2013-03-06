@@ -80,7 +80,7 @@ var BulletType = {
         speed: 1.5,
         cooldown: 50,
         lifeTime: 2000,
-        damage: 1,
+        damage: 2,
         sound: "pewpewpew",
         launchAngle: function (state) {
             return 0;
