@@ -25,10 +25,14 @@
     <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 <body onload="init()">
-    <div id="loader"></div>
+    <div id="loader">Loading...</div>
 
     <div id="content">
         <canvas id="canvas"></canvas>
+
+        <div id="stopgame">
+            <a href="#" onclick="kill();">Stop</a>
+        </div>
     </div>
 
     <div id="error" style="display: none;">
@@ -54,9 +58,6 @@
         <a href="?">Play Again</a>
     </div>
 
-    <div id="stopgame">
-        <a href="#" onclick="kill();">Stop</a>
-    </div>
 
     <div id="credits">
         <span class="left">

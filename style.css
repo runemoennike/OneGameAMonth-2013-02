@@ -21,6 +21,19 @@ body
 	display: none;
 }
 
+#loader
+{
+	display:none;
+}
+	#loader.loader
+	{
+		padding-top: 5em;
+		color: white;
+		text-align: center;
+		font-size: 3em;
+		display: block;
+	}
+
 #content
 {
 	display: none;
@@ -48,6 +61,7 @@ body
 	width: 1000px;
 	height: 20px;
 	color: black;
+	display: none;
 }
 
 	#debug ul
