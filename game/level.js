@@ -1,10 +1,11 @@
 ﻿
 var numSectorsX = 7;
-var numSectorsY = 20;
+var numSectorsY = 30;
 var sectorBaseSize = 2000;
 var sectorSize;
 var sectors;
 var lastCollidedLineSegment;
+var finishLineY = sectorBaseSize * -28.5;
 
 function generateSectors() {
     sectors = new Array(numSectorsX * numSectorsY);
@@ -215,7 +216,6 @@ function drawFloor(dt) {
 
 
 function drawSectors() {
-    document.getElementById("debug_pos").innerHTML = Math.floor(pl.x / scale) + "," + Math.floor(pl.y / scale);
 
     var plsx = Math.floor(pl.x / sectorSize + 0.5);
     var plsy = Math.floor(-pl.y / sectorSize + 0.5);
@@ -230,6 +230,18 @@ function drawSectors() {
                 drawShapes(sectors[sy * numSectorsX + sx]);
             }
         }
+    }
+}
+
+
+function drawFinishLine() {
+    for (var i = 0; i < 4; i++) {
+        ctx.beginPath();
+        ctx.lineWidth = 10 + i * 10;
+        ctx.strokeStyle = "white";
+        ctx.moveTo(0, finishLineY + 200 - i * 50);
+        ctx.lineTo(numSectorsX * sectorSize, finishLineY + 200 - i * 50);
+        ctx.stroke();
     }
 }
 

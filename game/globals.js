@@ -1,5 +1,5 @@
 ﻿
-var GameState = { COUNTDOWN: 1, PLAYING: 2, DEAD: 3 }
+var GameState = { COUNTDOWN: 1, PLAYING: 2, DEAD: 3, WON: 4 }
 var ScoreState = { GAINING: 1, LOSING: 2, LOSING_FAST: 3 }
 
 

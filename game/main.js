@@ -10,7 +10,9 @@ function init() {
     ctx = canvas.getContext('2d');
 
     setSizes();
-    window.onresize = setSizes;
+    pl.x = pl.lx = sectorSize * (numSectorsX / 2.0 - 0.5);
+    pl.y = pl.ly = -sectorSize * 2;
+    //window.onresize = setSizes;
 
     createjs.FlashPlugin.BASE_PATH = "lib/"
     if (!createjs.Sound.initializeDefaultPlugins()) {
@@ -33,13 +35,13 @@ function init() {
 }
 
 function setSizes() {
+    var oldScale = scale;
     canvasW = canvas.width = innerWidth;
     canvasH = canvas.height = innerHeight;
     scale = Math.sqrt((canvasW * canvasW + canvasH * canvasH)) / Math.sqrt((1920 * 1920) + (1080 * 1080));
 
     sectorSize = sectorBaseSize * scale;
-    pl.x = pl.lx = sectorSize * (numSectorsX / 2.0 - 0.5);
-    pl.y = pl.ly = -sectorSize * 2;
+
 }
 
 function loadComplete(event) {
@@ -68,7 +70,7 @@ function gameLoop() {
         dt = now - (time || now);
     time = now;
 
-    if (gamestate != GameState.DEAD) {
+    if (gamestate == GameState.PLAYING || gamestate == GameState.COUNTDOWN) {
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -91,6 +93,7 @@ function gameLoop() {
 
         ctx.translate(-pl.x, -pl.y);
         ctx.scale(scale, scale);
+        drawFinishLine();
         drawSectors();
         drawBullets();
         drawEnemies(dt);
@@ -125,12 +128,20 @@ function gameLoop() {
         }
         if (pl.hp <= 0 || now - playStartTime > playLength) {
             gamestate = GameState.DEAD;
-            document.getElementById("credits").style.display = "block";
+            showChrome();
             createjs.Sound.stop();
+        }
+        if (playerScaledWorldPos()[1] < finishLineY) {
+            gamestate = GameState.WON;
+            showChrome();
+            createjs.Sound.stop();
+            playSound("win");
         }
     } else if (gamestate == GameState.DEAD) {
         drawDeadScreen();
         playSound("deathnoise");
+    } else if (gamestate == GameState.WON) {
+        drawWinScreen();
     }
 
     fpsc++;
@@ -143,6 +154,7 @@ function gameLoop() {
 
     document.getElementById("debug_frametime").innerHTML = dt;
     document.getElementById("debug_hp").innerHTML = Math.round(pl.hp);
+    document.getElementById("debug_pos").innerHTML = Math.floor(playerScaledWorldPos()[0]) + "," + Math.floor(playerScaledWorldPos()[1]);
 }
 
 
@@ -160,17 +172,42 @@ function drawDeadScreen() {
 
     ctx.globalAlpha = 0.7;
     ctx.fillStyle = "#000";
-    ctx.font = "bold " + (400*scale) + "px Sans-serif";
+    ctx.font = "bold " + (300*scale) + "px Sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(Math.floor(pl.score), canvasW / 2, canvasH / 2);
+    ctx.fillText("Game Over", canvasW / 2, canvasH / 2);
+
+    ctx.font = "bold " + (80 * scale) + "px Sans-serif";
+    ctx.fillText("You didn't make it, zero points!", canvasW / 2, canvasH / 2 + 200 * scale);
     ctx.globalAlpha = 1.0;
 
 }
 
+function drawWinScreen() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.globalAlpha = 0.7;
+    ctx.fillStyle = "#FFF";
+    ctx.font = "bold " + (300 * scale) + "px Sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("You Win!", canvasW / 2, canvasH / 2); //
+
+    ctx.fillStyle = "#00FF00";
+    ctx.font = "bold " + (80 * scale) + "px Sans-serif";
+    ctx.fillText(Math.floor(pl.score), canvasW / 2, canvasH / 2 + 200 * scale); 
+    ctx.globalAlpha = 1.0;
+}
+
+function showChrome() {
+    document.getElementById("credits").style.display = "block";
+    document.getElementById("content").className = "paused";
+    document.getElementById("playagain").style.display = "block";
+}
 
 function kill() {
     if (preload != null) { preload.close(); }
     createjs.Sound.stop();
+    showChrome();
     cancelAnimationFrame(rafId);
 }
